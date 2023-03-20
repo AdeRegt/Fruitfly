@@ -28,6 +28,8 @@
                       </div>
                     <br/>
                     <canvas id="canvasid"></canvas>
+                    <br/>
+                    <label id="mystatus" style="color:lightgray"></label>
                 </div>
             </div>
         </div>
@@ -38,8 +40,11 @@
 
             window.fruitflysession = new FruitflyCompilerEditor(document.getElementById("thing"),document.getElementById("mylabel"),document.getElementById("downloadlink"));
             window.fruitflysession.attach();
+            window.fruitflysession.setOnCompiledListener(function(data){
+                window.fruitflyemulator.insertCardridge(data);
+            });
 
-            window.fruitflyemulator = new FruitflyEmulator(document.getElementById("canvasid"));
+            window.fruitflyemulator = new FruitflyEmulator(document.getElementById("canvasid"),document.getElementById("mystatus"));
             document.getElementById("inputGroupFileAddon03").addEventListener("click",function(){
                 window.fruitflyemulator.insertCardridge(window.fruitflysession.generateUint16DataArray());
             });

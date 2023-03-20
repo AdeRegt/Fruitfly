@@ -1,20 +1,40 @@
 class FruitflyEmulator{
 
-    constructor(canvas){
+    constructor(canvas,status){
         this.rawcanvas = canvas;
+        this.rawstatus = status;
         this.memory = new Uint16Array(4103);
         this.instruction_pointer = 0;
         this.registerA = 0;
         this.registerB = 0;
         this.callstack = [];
+        this.current_opcode = 0;
+        this.current_argument = 0;
         this.is_running = false;
+        this.lasterror = null;
+        this.onexit = null;
+        this.tickssinceboot = 0;
         var innerthis = this;
         this.timer = window.setInterval(function(){
             innerthis.tick();
         },1);
     }
 
+    setStatus(message){
+        this.rawstatus.innerHTML = message;
+    }
+
+    getStatus(){
+        return this.rawstatus.innerHTML;
+    }
+
+    setOnExitListener(fun){
+        this.onexit = fun;
+    }
+
     tick(){
+        this.tickssinceboot++;
+        this.setStatus("IP = 0x"+this.instruction_pointer.toString(16)+" | A = 0x"+this.registerA.toString(16)+" | B = 0x"+this.registerB.toString(16)+" | Opcode = 0x"+this.current_opcode.toString(16)+" | Argument = 0x"+this.current_argument.toString(16)+" | Stack = "+this.callstack.join(",")+" | LastError="+this.lasterror+" | IsRunning="+this.is_running+" | Ticks="+this.tickssinceboot);
         if(!this.is_running){
             return;
         }
@@ -24,6 +44,26 @@ class FruitflyEmulator{
         this.current_opcode_set = this.memory[this.instruction_pointer];
         this.current_opcode = (this.current_opcode_set & 0xF000) >> 12;
         this.current_argument = (this.current_opcode_set & 0x0FFF);
+        if(this.current_opcode==0xF){ // EXIT 
+            this.is_running = false;
+            if(this.onexit!=null){
+                this.onexit(this.current_argument);
+            }
+        }else if(this.current_opcode==0xE){ // DEBUG
+            window.alert(this.getStatus());
+            this.instruction_pointer++;
+        }else if(this.current_opcode==0xD){ // SYSTEMCALL
+            this.is_running = false;
+            this.lasterror = "Syscall not implemented yet!";
+        }else if(this.current_opcode==0xC){ // RETURN
+            this.instruction_pointer = this.callstack.pop();
+        }else if(this.current_opcode==0xB){ // CALL
+            this.callstack.push(this.instruction_pointer+1);
+            this.instruction_pointer = this.current_argument;
+        }else{
+            this.is_running = false;
+            this.lasterror = "Unknown opcode";
+        }
     }
 
     insertCardridge(dataset){
@@ -49,6 +89,8 @@ class FruitflyEmulator{
         this.registerA = 0;
         this.registerB = 0;
         this.callstack = [];
+        this.lasterror = null;
+        this.tickssinceboot = 0;
         this.is_running = true;
     }
 }
