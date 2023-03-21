@@ -62,6 +62,12 @@ const SXE_OPWORD_JNE = "JNE";
 const SXE_OPCODE_NOP = 0x0;
 const SXE_OPWORD_NOP = "NOP";
 
+const SXE_OPWORD_ADD = "ADD";
+const SXE_OPWORD_SUB = "SUB";
+const SXE_OPWORD_DIV = "DIV";
+const SXE_OPWORD_MUL = "MUL";
+const SXE_OPWORD_DUMP = "DUMP";
+
 class FruitflyCompilerToken {
 
     constructor(tokenstring, rijnummer, isstring) {
@@ -81,7 +87,7 @@ class FruitflyCompilerToken {
             if (this.value.endsWith(":")) {
                 this.type = "LABEL";
                 this.value = this.value.replace(":", "");
-            } else if ([SXE_OPWORD_EXIT, SXE_OPWORD_DEBUG, SXE_OPWORD_SYSCALL, SXE_OPWORD_RETURN, SXE_OPWORD_CALL].includes(this.value.toUpperCase())) {
+            } else if ([SXE_OPWORD_EXIT, SXE_OPWORD_DEBUG, SXE_OPWORD_SYSCALL, SXE_OPWORD_RETURN, SXE_OPWORD_CALL, SXE_OPWORD_A2RA, SXE_OPWORD_A2RB, SXE_OPWORD_RA2A, SXE_OPWORD_RB2A, SXE_OPWORD_JUMP, SXE_OPWORD_JE, SXE_OPWORD_JM, SXE_OPWORD_JL, SXE_OPWORD_JNE, SXE_OPWORD_ADD, SXE_OPWORD_SUB, SXE_OPWORD_DIV, SXE_OPWORD_MUL, SXE_OPWORD_DUMP].includes(this.value.toUpperCase())) {
                 this.value = this.value.toUpperCase();
                 this.type = "KEYWORD";
             } else {
@@ -315,16 +321,16 @@ class FruitflyCompiler {
                     }
                     this.ast.push({ bytecode: this.format(SXE_OPCODE_JUMP, vc), label: tv });
                 }
-                else if (current_token.value == "ADD") {
+                else if (current_token.value == SXE_OPWORD_ADD) {
                     this.ast.push({ bytecode: this.format(SXE_OPCODE_FLAGS, 1), label: null });
                 }
-                else if (current_token.value == "SUB") {
+                else if (current_token.value == SXE_OPWORD_SUB) {
                     this.ast.push({ bytecode: this.format(SXE_OPCODE_FLAGS, 2), label: null });
                 }
-                else if (current_token.value == "DIV") {
+                else if (current_token.value == SXE_OPWORD_DIV) {
                     this.ast.push({ bytecode: this.format(SXE_OPCODE_FLAGS, 3), label: null });
                 }
-                else if (current_token.value == "MUL") {
+                else if (current_token.value == SXE_OPWORD_MUL) {
                     this.ast.push({ bytecode: this.format(SXE_OPCODE_FLAGS, 4), label: null });
                 }
                 else if (current_token.value == SXE_OPWORD_JE) {
@@ -398,6 +404,44 @@ class FruitflyCompiler {
                         tv = temp_token.value;
                     }
                     this.ast.push({ bytecode: this.format(SXE_OPCODE_JNE, vc), label: tv });
+                }
+                else if (current_token.value == SXE_OPWORD_DUMP) {
+                    i++;
+                    var temp_token = this.tokens[i];
+                    if (typeof (temp_token) === "undefined") {
+                        this.errorslist.push("Expected: DUMP [SOMETHING], found: DUMP EOF");
+                        return;
+                    }
+                    if (temp_token.getType() == "SYMBOL") {
+                        var vc = this.calltable[temp_token.value];
+                        var tv = null;
+                        if(vc==0xFFF){
+                            tv = temp_token.value;
+                        }
+                        this.ast.push({ bytecode: this.format(SXE_OPCODE_NOP, vc), label: tv });
+                    }else if(temp_token.getType() == "NUMBER"){
+                        this.ast.push({ bytecode: temp_token.value, label: null });
+                    }else if(temp_token.getType() == "STRING"){
+                        if(temp_token.value.length==0){
+                            continue;
+                        }
+                        temp_token.value += "\0";
+                        if((temp_token.value.length%2)!=0){
+                            temp_token.value += "\0";
+                        }
+                        if (!("TextEncoder" in window)){
+                            this.errorslist.push("Your browser cannot encode things!");
+                            return;
+                        }
+                        var enc = new TextEncoder();
+                        var gea = enc.encode(temp_token.value);
+                        for(var z = 0 ; z < gea.length ; z+=2){
+                            this.ast.push({ bytecode: gea[z] + (gea[z+1]*0x100), label: null });
+                        }
+                    }else{
+                        this.errorslist.push("Unknown DUMP type: "+temp_token.getType() );
+                        return;
+                    }
                 }
             }
         }

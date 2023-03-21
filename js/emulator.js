@@ -61,10 +61,10 @@ class FruitflyEmulator {
             this.callstack.push(this.instruction_pointer + 1);
             this.instruction_pointer = this.current_argument;
         } else if (this.current_opcode == 0xA) { // A2RA
-            this.A = this.current_argument;
+            this.A = this.memory[this.current_argument];
             this.instruction_pointer++;
         } else if (this.current_opcode == 0x9) { // A2RB
-            this.B = this.current_argument;
+            this.B = this.memory[this.current_argument];
             this.instruction_pointer++;
         } else if (this.current_opcode == 0x8) { // RA2A
             this.memory[this.current_argument] = this.A;
