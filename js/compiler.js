@@ -1,60 +1,60 @@
-
+// EXIT exitcode OK
 const SXE_OPCODE_EXIT = 0xF;
 const SXE_OPWORD_EXIT = "EXIT";
 
-// DEBUG nothing
+// DEBUG nothing OK
 const SXE_OPCODE_DEBUG = 0xE;
 const SXE_OPWORD_DEBUG = "DEBUG";
 
-// SYSCALL [ADDR] 
+// SYSCALL [ADDR] PENDING
 const SXE_OPCODE_SYSCALL = 0xD;
 const SXE_OPWORD_SYSCALL = "SYSCALL";
 
-// RETURN nothing
+// RETURN nothing OK
 const SXE_OPCODE_RETURN = 0xC;
 const SXE_OPWORD_RETURN = "RETURN";
 
-// CALL [ADDR]
+// CALL [ADDR] OK
 const SXE_OPCODE_CALL = 0xB;
 const SXE_OPWORD_CALL = "CALL";
 
-// ADDR to REGA [ADDR]
+// ADDR to REGA [ADDR] OK
 const SXE_OPCODE_A2RA = 0xA;
 const SXE_OPWORD_A2RA = "A2RA";
 
-// ADDR to REGB [ADDR]
+// ADDR to REGB [ADDR] OK
 const SXE_OPCODE_A2RB = 0x9;
 const SXE_OPWORD_A2RB = "A2RB";
 
-// REGA to ADDR [ADDR]
+// REGA to ADDR [ADDR] OK
 const SXE_OPCODE_RA2A = 0x8;
 const SXE_OPWORD_RA2A = "RA2A";
 
-// REGB to ADDR [ADDR]
+// REGB to ADDR [ADDR] OK
 const SXE_OPCODE_RB2A = 0x7;
 const SXE_OPWORD_RB2A = "RB2A";
 
-// JUMP [ADDR]
+// JUMP [ADDR] OK
 const SXE_OPCODE_JUMP = 0x6;
 const SXE_OPWORD_JUMP = "JUMP";
 
-// MATH [FLAGS]
+// MATH [FLAGS] OK
 const SXE_OPCODE_FLAGS = 0x5;
 const SXE_OPWORD_FLAGS = "FLAGS";
 
-// JE [ADDR]
+// JE [ADDR] OK
 const SXE_OPCODE_JE = 0x4;
 const SXE_OPWORD_JE = "JE";
 
-// JM [ADDR]
+// JM [ADDR] OK
 const SXE_OPCODE_JM = 0x3;
 const SXE_OPWORD_JM = "JM";
 
-// JL [ADDR]
+// JL [ADDR] OK
 const SXE_OPCODE_JL = 0x2;
 const SXE_OPWORD_JL = "JL";
 
-// JNE [ADDR]
+// JNE [ADDR] OK
 const SXE_OPCODE_JNE = 0x1;
 const SXE_OPWORD_JNE = "JNE";
 
@@ -224,6 +224,180 @@ class FruitflyCompiler {
                         tv = temp_token.value;
                     }
                     this.ast.push({ bytecode: this.format(SXE_OPCODE_CALL, vc), label: tv });
+                }
+                else if (current_token.value == SXE_OPWORD_A2RA) {
+                    i++;
+                    var temp_token = this.tokens[i];
+                    if (typeof (temp_token) === "undefined") {
+                        this.errorslist.push("Expected: A2RA [SYMBOL], found: A2RA EOF");
+                        return;
+                    }
+                    if (!(temp_token.getType() == "SYMBOL")) {
+                        this.errorslist.push("Expected: A2RA [SYMBOL], found: A2RA " + temp_token.getType());
+                        return;
+                    }
+                    var vc = this.calltable[temp_token.value];
+                    var tv = null;
+                    if(vc==0xFFF){
+                        tv = temp_token.value;
+                    }
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_A2RA, vc), label: tv });
+                }
+                else if (current_token.value == SXE_OPWORD_A2RB) {
+                    i++;
+                    var temp_token = this.tokens[i];
+                    if (typeof (temp_token) === "undefined") {
+                        this.errorslist.push("Expected: A2RB [SYMBOL], found: A2RB EOF");
+                        return;
+                    }
+                    if (!(temp_token.getType() == "SYMBOL")) {
+                        this.errorslist.push("Expected: A2RB [SYMBOL], found: A2RB " + temp_token.getType());
+                        return;
+                    }
+                    var vc = this.calltable[temp_token.value];
+                    var tv = null;
+                    if(vc==0xFFF){
+                        tv = temp_token.value;
+                    }
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_A2RB, vc), label: tv });
+                }
+                else if (current_token.value == SXE_OPWORD_RA2A) {
+                    i++;
+                    var temp_token = this.tokens[i];
+                    if (typeof (temp_token) === "undefined") {
+                        this.errorslist.push("Expected: RA2A [SYMBOL], found: RA2A EOF");
+                        return;
+                    }
+                    if (!(temp_token.getType() == "SYMBOL")) {
+                        this.errorslist.push("Expected: RA2A [SYMBOL], found: RA2A " + temp_token.getType());
+                        return;
+                    }
+                    var vc = this.calltable[temp_token.value];
+                    var tv = null;
+                    if(vc==0xFFF){
+                        tv = temp_token.value;
+                    }
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_RA2A, vc), label: tv });
+                }
+                else if (current_token.value == SXE_OPWORD_RB2A) {
+                    i++;
+                    var temp_token = this.tokens[i];
+                    if (typeof (temp_token) === "undefined") {
+                        this.errorslist.push("Expected: RB2A [SYMBOL], found: RB2A EOF");
+                        return;
+                    }
+                    if (!(temp_token.getType() == "SYMBOL")) {
+                        this.errorslist.push("Expected: RB2A [SYMBOL], found: RB2A " + temp_token.getType());
+                        return;
+                    }
+                    var vc = this.calltable[temp_token.value];
+                    var tv = null;
+                    if(vc==0xFFF){
+                        tv = temp_token.value;
+                    }
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_RB2A, vc), label: tv });
+                }
+                else if (current_token.value == SXE_OPWORD_JUMP) {
+                    i++;
+                    var temp_token = this.tokens[i];
+                    if (typeof (temp_token) === "undefined") {
+                        this.errorslist.push("Expected: JUMP [ADDR], found: JUMP EOF");
+                        return;
+                    }
+                    if (!(temp_token.getType() == "SYMBOL")) {
+                        this.errorslist.push("Expected: JUMP [SYMBOL], found: JUMP " + temp_token.getType());
+                        return;
+                    }
+                    var vc = this.calltable[temp_token.value];
+                    var tv = null;
+                    if(vc==0xFFF){
+                        tv = temp_token.value;
+                    }
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_JUMP, vc), label: tv });
+                }
+                else if (current_token.value == "ADD") {
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_FLAGS, 1), label: null });
+                }
+                else if (current_token.value == "SUB") {
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_FLAGS, 2), label: null });
+                }
+                else if (current_token.value == "DIV") {
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_FLAGS, 3), label: null });
+                }
+                else if (current_token.value == "MUL") {
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_FLAGS, 4), label: null });
+                }
+                else if (current_token.value == SXE_OPWORD_JE) {
+                    i++;
+                    var temp_token = this.tokens[i];
+                    if (typeof (temp_token) === "undefined") {
+                        this.errorslist.push("Expected: JE [ADDR], found: JE EOF");
+                        return;
+                    }
+                    if (!(temp_token.getType() == "SYMBOL")) {
+                        this.errorslist.push("Expected: JE [SYMBOL], found: JE " + temp_token.getType());
+                        return;
+                    }
+                    var vc = this.calltable[temp_token.value];
+                    var tv = null;
+                    if(vc==0xFFF){
+                        tv = temp_token.value;
+                    }
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_JE, vc), label: tv });
+                }
+                else if (current_token.value == SXE_OPWORD_JM) {
+                    i++;
+                    var temp_token = this.tokens[i];
+                    if (typeof (temp_token) === "undefined") {
+                        this.errorslist.push("Expected: JM [ADDR], found: JM EOF");
+                        return;
+                    }
+                    if (!(temp_token.getType() == "SYMBOL")) {
+                        this.errorslist.push("Expected: JM [SYMBOL], found: JM " + temp_token.getType());
+                        return;
+                    }
+                    var vc = this.calltable[temp_token.value];
+                    var tv = null;
+                    if(vc==0xFFF){
+                        tv = temp_token.value;
+                    }
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_JM, vc), label: tv });
+                }
+                else if (current_token.value == SXE_OPWORD_JL) {
+                    i++;
+                    var temp_token = this.tokens[i];
+                    if (typeof (temp_token) === "undefined") {
+                        this.errorslist.push("Expected: JL [ADDR], found: JL EOF");
+                        return;
+                    }
+                    if (!(temp_token.getType() == "SYMBOL")) {
+                        this.errorslist.push("Expected: JL [SYMBOL], found: JL " + temp_token.getType());
+                        return;
+                    }
+                    var vc = this.calltable[temp_token.value];
+                    var tv = null;
+                    if(vc==0xFFF){
+                        tv = temp_token.value;
+                    }
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_JL, vc), label: tv });
+                }
+                else if (current_token.value == SXE_OPWORD_JNE) {
+                    i++;
+                    var temp_token = this.tokens[i];
+                    if (typeof (temp_token) === "undefined") {
+                        this.errorslist.push("Expected: JNE [ADDR], found: JNE EOF");
+                        return;
+                    }
+                    if (!(temp_token.getType() == "SYMBOL")) {
+                        this.errorslist.push("Expected: JNE [SYMBOL], found: JNE " + temp_token.getType());
+                        return;
+                    }
+                    var vc = this.calltable[temp_token.value];
+                    var tv = null;
+                    if(vc==0xFFF){
+                        tv = temp_token.value;
+                    }
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_JNE, vc), label: tv });
                 }
             }
         }

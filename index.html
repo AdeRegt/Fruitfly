@@ -1,63 +1,232 @@
 <html>
-    <head>
-        <title>Sanders fruitfly</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    </head>
-    <body>
-        <div class="container text-center">
-            <div class="row" style="height: calc(100% - 150px);">
-                <div class="col">
-                    <b>Editor</b>
-                    <br/>
-                    <br/>
-                    <textarea style="width: 100%; height: calc(100% - 50px)" id="thing"></textarea>
-                    <br/>
-                    <br/>
-                    <label id="mylabel" style="color:red"></label>
-                    <a id="downloadlink" type="button" class="btn btn-info disabled">Download file</a>
+
+<head>
+    <title>Sanders fruitfly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <div class="container text-center">
+        <div class="row" style="height: calc(100% - 150px);">
+            <div class="col">
+                <b>Editor</b>
+                <br />
+                <br />
+                <textarea style="width: 100%; height: calc(100% - 50px)" id="thing"></textarea>
+                <br />
+                <br />
+                <label id="mylabel" style="color:red"></label>
+                <a id="downloadlink" type="button" class="btn btn-info disabled">Download assembled file</a>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#opcodeModal">Show
+                    opcode list</button>
+            </div>
+            <div class="col">
+                <b>Emulator</b>
+                <br />
+                <br />
+                <div class="input-group mb-3">
+                    <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon03">Use from
+                        editor</button>
+                    <span class="input-group-text">OR</span>
+                    <input type="file" class="form-control" id="inputGroupFile03"
+                        aria-describedby="inputGroupFileAddon03" aria-label="Upload">
                 </div>
-                <div class="col">
-                    <b>Emulator</b>
-                    <br/>
-                    <br/>
-                    <div class="input-group mb-3">
-                        <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon03">Use from editor</button>
-                        <span class="input-group-text">OR</span>
-                        <input type="file" class="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload">
-                      </div>
-                    <br/>
-                    <canvas id="canvasid"></canvas>
-                    <br/>
-                    <label id="mystatus" style="color:lightgray"></label>
+                <br />
+                <canvas id="canvasid"></canvas>
+                <br />
+                <label id="mystatus" style="color:lightgray"></label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="opcodeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" style="min-width: calc(80%);">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Opcode list</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Code</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">EXIT [EXITCODE]</th>
+                                <td>Exit the emulation</td>
+                                <td>Exits the virtual machine with EXITCODE as exitcode. EXITCODE should be a number</td>
+                                <td><code>EXIT 5</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">DEBUG</th>
+                                <td>Debug</td>
+                                <td>Stops emulator and shows status of registers, Instruction Pointer and the callstack</td>
+                                <td><code>DEBUG</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">SYSCALL [SYMBOL]</th>
+                                <td>Syscall</td>
+                                <td>Preform a syscall using the structure defined at SYMBOL. Click HERE to see which commands are supported</td>
+                                <td>
+                                    Move the address of teststring to register A<br/>
+                                    <code>A2RA teststring</code> <br/><br/>
+                                    Move the address in register A to the string_i_want_to_print variable<br/>
+                                    <code>RA2A string_i_want_to_print</code> <br/><br/>
+                                    Call the systemcall<br/>
+                                    <code>SYSCALL structure_of_print_command</code> <br/><br/>
+                                    Return to the previous operation<br/>
+                                    <code>RETURN</code><br/><br/>
+                                    Structure of the systemcall<br/>
+                                    <code>structure_of_print_command:</code> <br/><br/>
+                                    Fill the structure with the opcode of the print command: 1 <br/>
+                                    <code>DUMP 0x0001</code> <br/><br/>
+                                    Pointer to the variable we want to print<br/>
+                                    <code>string_i_want_to_print:</code> <br/><br/>
+                                    The variable is NULL by default<br/>
+                                    <code>DUMP 0</code><br/><br/>
+                                    <code>teststring:</code><br/><br/>
+                                    The string we want to print<br/>
+                                    <code>DUMP "Hello world!\n\0"</code> <br/><br/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">RETURN</th>
+                                <td>Return from subroutine</td>
+                                <td>Returns from subroutine and pop a value from the callstack</td>
+                                <td><code>RETURN</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">CALL [symbol]</th>
+                                <td>Call function</td>
+                                <td>Calls function</td>
+                                <td><code>CALL main</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">A2RA [symbol]</th>
+                                <td>Address to Register A</td>
+                                <td>Takes the address value and put it in registerA</td>
+                                <td><code>A2RA main</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">A2RB [symbol]</th>
+                                <td>Address to Register B</td>
+                                <td>Takes the address value and put it in registerB</td>
+                                <td><code>A2RB main</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">RA2A [symbol]</th>
+                                <td>Register A to address</td>
+                                <td>Puts the value of register A to address</td>
+                                <td><code>RA2A main</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">RB2A [symbol]</th>
+                                <td>Register B to address</td>
+                                <td>Puts the value of register B to address</td>
+                                <td><code>RB2A main</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">JUMP [symbol]</th>
+                                <td>Jump to function</td>
+                                <td>Jumps unconditionally to function</td>
+                                <td><code>JUMP main</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">ADD</th>
+                                <td>Add</td>
+                                <td>A = A + B</td>
+                                <td><code>ADD</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">SUB</th>
+                                <td>Substract</td>
+                                <td>A = A - B</td>
+                                <td><code>SUB</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">DIV</th>
+                                <td>Divide</td>
+                                <td>A = A / B</td>
+                                <td><code>DIV</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">MUL</th>
+                                <td>Multiply</td>
+                                <td>A = A * B</td>
+                                <td><code>MUL</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">JE [SYMBOL]</th>
+                                <td>Jump Equals</td>
+                                <td>Goto symbol if A==B</td>
+                                <td><code>JE location</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">JM [SYMBOL]</th>
+                                <td>Jump more</td>
+                                <td>Goto symbol if A>B</td>
+                                <td><code>JM location</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">JL [SYMBOL]</th>
+                                <td>Jump less</td>
+                                <td>Goto symbol if A<B</td>
+                                <td><code>JL location</code></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">JNE [SYMBOL]</th>
+                                <td>Jump Not Equals</td>
+                                <td>Goto symbol if A!=B</td>
+                                <td><code>JNE location</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
-        
-        <script src="/js/compiler.js"></script>
-        <script src="/js/emulator.js"></script>
-        <script>
+    </div>
 
-            window.fruitflysession = new FruitflyCompilerEditor(document.getElementById("thing"),document.getElementById("mylabel"),document.getElementById("downloadlink"));
-            window.fruitflysession.attach();
-            window.fruitflysession.setOnCompiledListener(function(data){
+    <script src="/js/compiler.js"></script>
+    <script src="/js/emulator.js"></script>
+    <script>
+
+        window.fruitflysession = new FruitflyCompilerEditor(document.getElementById("thing"), document.getElementById("mylabel"), document.getElementById("downloadlink"));
+        window.fruitflysession.attach();
+        window.fruitflysession.setOnCompiledListener(function (data) {
+            window.fruitflyemulator.insertCardridge(data);
+        });
+
+        window.fruitflyemulator = new FruitflyEmulator(document.getElementById("canvasid"), document.getElementById("mystatus"));
+        document.getElementById("inputGroupFileAddon03").addEventListener("click", function () {
+            window.fruitflyemulator.insertCardridge(window.fruitflysession.generateUint16DataArray());
+        });
+        document.getElementById("inputGroupFile03").addEventListener("change", function (evt) {
+            var file = evt.target.files[0];
+            let reader = new FileReader();
+            reader.addEventListener("loadend", function (e) {
+                var data = new Uint16Array(e.target.result);
                 window.fruitflyemulator.insertCardridge(data);
             });
+            reader.readAsArrayBuffer(file);
+        });
 
-            window.fruitflyemulator = new FruitflyEmulator(document.getElementById("canvasid"),document.getElementById("mystatus"));
-            document.getElementById("inputGroupFileAddon03").addEventListener("click",function(){
-                window.fruitflyemulator.insertCardridge(window.fruitflysession.generateUint16DataArray());
-            });
-            document.getElementById("inputGroupFile03").addEventListener("change",function(evt){
-                var file = evt.target.files[0];
-                let reader = new FileReader();
-                reader.addEventListener("loadend", function(e){
-                    var data = new Uint16Array(e.target.result);
-                    window.fruitflyemulator.insertCardridge(data);
-                });
-                reader.readAsArrayBuffer(file);
-            });
+    </script>
+</body>
 
-        </script>
-    </body>
 </html>
