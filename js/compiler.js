@@ -207,8 +207,20 @@ class FruitflyCompiler {
                 else if (current_token.value == SXE_OPWORD_SYSCALL) {
                     i++;
                     var temp_token = this.tokens[i];
-                    this.errorslist.push("SYSCALL not supported yet!");
-                    return;
+                    if (typeof (temp_token) === "undefined") {
+                        this.errorslist.push("Expected: SYSCALL [ADDR], found: SYSCALL EOF");
+                        return;
+                    }
+                    if (!(temp_token.getType() == "SYMBOL")) {
+                        this.errorslist.push("Expected: SYSCALL [SYMBOL], found: SYSCALL " + temp_token.getType());
+                        return;
+                    }
+                    var vc = this.calltable[temp_token.value];
+                    var tv = null;
+                    if(vc==0xFFF){
+                        tv = temp_token.value;
+                    }
+                    this.ast.push({ bytecode: this.format(SXE_OPCODE_SYSCALL, vc), label: tv });
                 }
                 else if(current_token.value == SXE_OPWORD_RETURN){
                     this.ast.push({ bytecode: this.format(SXE_OPCODE_RETURN, 0), label: null });
@@ -429,14 +441,8 @@ class FruitflyCompiler {
                         if((temp_token.value.length%2)!=0){
                             temp_token.value += "\0";
                         }
-                        if (!("TextEncoder" in window)){
-                            this.errorslist.push("Your browser cannot encode things!");
-                            return;
-                        }
-                        var enc = new TextEncoder();
-                        var gea = enc.encode(temp_token.value);
-                        for(var z = 0 ; z < gea.length ; z+=2){
-                            this.ast.push({ bytecode: gea[z] + (gea[z+1]*0x100), label: null });
+                        for(var z = 0 ; z < temp_token.value.length ; z+=2){
+                            this.ast.push({ bytecode: temp_token.value.charCodeAt(z) + (temp_token.value.charCodeAt(z+1)*0x100), label: null });
                         }
                     }else{
                         this.errorslist.push("Unknown DUMP type: "+temp_token.getType() );
@@ -527,6 +533,10 @@ class FruitflyCompilerEditor extends FruitflyCompiler {
 
     setOnCompiledListener(fun){
         this.oncompiled = fun;
+    }
+
+    fire(){
+        this.textarea.dispatchEvent(new Event("keyup"));
     }
 
     attach() {

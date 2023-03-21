@@ -18,7 +18,17 @@
                 <b>Editor</b>
                 <br />
                 <br />
-                <textarea style="width: 100%; height: calc(100% - 50px)" id="thing"></textarea>
+                <textarea style="width: 100%; height: calc(100% - 50px)" id="thing">
+                    call main
+                    exit 1
+                    main:
+                    syscall print_structure
+                    return 
+                    
+                    print_structure:
+                    dump 1
+                    dump "hello world" 
+                </textarea>
                 <br />
                 <br />
                 <label id="mylabel" style="color:red"></label>
@@ -38,7 +48,7 @@
                         aria-describedby="inputGroupFileAddon03" aria-label="Upload">
                 </div>
                 <br />
-                <canvas id="canvasid"></canvas>
+                <textarea id="canvasid" style="width:100%;height:calc(100% - 130px)" disabled></textarea>
                 <br />
                 <label id="mystatus" style="color:lightgray"></label>
             </div>
@@ -54,6 +64,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <b>Instructionset</b><br/>
                     <table class="table">
                         <thead>
                             <tr>
@@ -79,7 +90,7 @@
                             <tr>
                                 <th scope="row">SYSCALL [SYMBOL]</th>
                                 <td>Syscall</td>
-                                <td>Preform a syscall using the structure defined at SYMBOL. Click HERE to see which commands are supported</td>
+                                <td>Preform a syscall using the structure defined at SYMBOL. Click <a href="#syscaltable">HERE</a> to see which commands are supported</td>
                                 <td>
                                     Move the address of teststring to register A<br/>
                                     <code>A2RA teststring</code> <br/><br/>
@@ -93,11 +104,6 @@
                                     <code>structure_of_print_command:</code> <br/><br/>
                                     Fill the structure with the opcode of the print command: 1 <br/>
                                     <code>DUMP 0x0001</code> <br/><br/>
-                                    Pointer to the variable we want to print<br/>
-                                    <code>string_i_want_to_print:</code> <br/><br/>
-                                    The variable is NULL by default<br/>
-                                    <code>DUMP 0</code><br/><br/>
-                                    <code>teststring:</code><br/><br/>
                                     The string we want to print<br/>
                                     <code>DUMP "Hello world!\n\0"</code> <br/><br/>
                                 </td>
@@ -200,6 +206,27 @@
                             </tr>
                         </tbody>
                     </table>
+                    <br/>
+                    <b id="syscaltable">Functions</b><br/>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Structure</th>
+                                <th scope="col">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Print</th>
+                                <td>
+                                    code: 1<br/>
+                                    link: location<br/>
+                                </td>
+                                <td>raw output something</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -231,6 +258,8 @@
             });
             reader.readAsArrayBuffer(file);
         });
+
+        window.fruitflysession.fire();
 
     </script>
 </body>

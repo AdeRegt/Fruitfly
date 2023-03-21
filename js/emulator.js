@@ -53,8 +53,31 @@ class FruitflyEmulator {
             window.alert(this.getStatus());
             this.instruction_pointer++;
         } else if (this.current_opcode == 0xD) { // SYSTEMCALL
-            this.is_running = false;
-            this.lasterror = "Syscall not implemented yet!";
+            var syscallid = this.memory[this.current_argument];
+            if(syscallid==1){
+                var i = 1;
+                var str = "";
+                while(true){
+                    var g = this.memory[this.current_argument+i];
+                    var low = g & 0x00FF;
+                    var high = (g & 0xFF00)/0x100;
+                    if(low==0){
+                        break;
+                    }
+                    str += ""+String.fromCharCode(low);
+                    if(high==0){
+                        break;
+                    }
+                    str += ""+String.fromCharCode(high);
+                    i++;
+                }
+                this.rawcanvas.append(str);
+            }else{
+                this.is_running = false;
+                this.lasterror = "This systemcall is not supported yet";
+                return;
+            }
+            this.instruction_pointer++;
         } else if (this.current_opcode == 0xC) { // RETURN
             this.instruction_pointer = this.callstack.pop();
         } else if (this.current_opcode == 0xB) { // CALL
@@ -144,6 +167,7 @@ class FruitflyEmulator {
         this.callstack = [];
         this.lasterror = null;
         this.tickssinceboot = 0;
+        this.rawcanvas.innerHTML = "Application is running since "+(new Date()).toISOString()+"\n";
         this.is_running = true;
     }
 }
