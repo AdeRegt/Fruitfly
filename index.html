@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -18,7 +19,8 @@
             </div>
             <div class="col col-lg-7">
                 <h1>Fruitfly</h1>
-                <i>Created by Alexandros de Regt 2023, See <a href="https://github.com/AdeRegt/Fruitfly">Github</a> for the sourcecode</i><br/>
+                <i>Created by Alexandros de Regt 2023, See <a href="https://github.com/AdeRegt/Fruitfly">Github</a> for
+                    the sourcecode</i><br />
             </div>
         </div>
         <div class="row" style="height: calc(100% - 250px);">
@@ -39,7 +41,7 @@
                 </textarea>
                 <br />
                 <br />
-                <label id="mylabel" style="color:red"></label>
+                <label id="errorContainer" style="color:red"></label>
                 <a id="downloadlink" type="button" class="btn btn-info disabled">Download assembled file</a>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#opcodeModal">Show
                     opcode list</button>
@@ -71,7 +73,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <b>Instructionset</b><br/>
+                    <b>Instructionset</b><br />
                     <table class="table">
                         <thead>
                             <tr>
@@ -85,34 +87,37 @@
                             <tr>
                                 <th scope="row">EXIT [EXITCODE]</th>
                                 <td>Exit the emulation</td>
-                                <td>Exits the virtual machine with EXITCODE as exitcode. EXITCODE should be a number</td>
+                                <td>Exits the virtual machine with EXITCODE as exitcode. EXITCODE should be a number
+                                </td>
                                 <td><code>EXIT 5</code></td>
                             </tr>
                             <tr>
                                 <th scope="row">DEBUG</th>
                                 <td>Debug</td>
-                                <td>Stops emulator and shows status of registers, Instruction Pointer and the callstack</td>
+                                <td>Stops emulator and shows status of registers, Instruction Pointer and the callstack
+                                </td>
                                 <td><code>DEBUG</code></td>
                             </tr>
                             <tr>
                                 <th scope="row">SYSCALL [SYMBOL]</th>
                                 <td>Syscall</td>
-                                <td>Preform a syscall using the structure defined at SYMBOL. Click <a href="#syscaltable">HERE</a> to see which commands are supported</td>
+                                <td>Preform a syscall using the structure defined at SYMBOL. Click <a
+                                        href="#syscaltable">HERE</a> to see which commands are supported</td>
                                 <td>
-                                    Move the address of teststring to register A<br/>
-                                    <code>A2RA teststring</code> <br/><br/>
-                                    Move the address in register A to the string_i_want_to_print variable<br/>
-                                    <code>RA2A string_i_want_to_print</code> <br/><br/>
-                                    Call the systemcall<br/>
-                                    <code>SYSCALL structure_of_print_command</code> <br/><br/>
-                                    Return to the previous operation<br/>
-                                    <code>RETURN</code><br/><br/>
-                                    Structure of the systemcall<br/>
-                                    <code>structure_of_print_command:</code> <br/><br/>
-                                    Fill the structure with the opcode of the print command: 1 <br/>
-                                    <code>DUMP 0x0001</code> <br/><br/>
-                                    The string we want to print<br/>
-                                    <code>DUMP "Hello world!\n\0"</code> <br/><br/>
+                                    Move the address of teststring to register A<br />
+                                    <code>A2RA teststring</code> <br /><br />
+                                    Move the address in register A to the string_i_want_to_print variable<br />
+                                    <code>RA2A string_i_want_to_print</code> <br /><br />
+                                    Call the systemcall<br />
+                                    <code>SYSCALL structure_of_print_command</code> <br /><br />
+                                    Return to the previous operation<br />
+                                    <code>RETURN</code><br /><br />
+                                    Structure of the systemcall<br />
+                                    <code>structure_of_print_command:</code> <br /><br />
+                                    Fill the structure with the opcode of the print command: 1 <br />
+                                    <code>DUMP 0x0001</code> <br /><br />
+                                    The string we want to print<br />
+                                    <code>DUMP "Hello world!\n\0"</code> <br /><br />
                                 </td>
                             </tr>
                             <tr>
@@ -196,7 +201,7 @@
                             <tr>
                                 <th scope="row">JL [SYMBOL]</th>
                                 <td>Jump less</td>
-                                <td>Goto symbol if A<B</td>
+                                <td>Goto symbol if A<B< /td>
                                 <td><code>JL location</code></td>
                             </tr>
                             <tr>
@@ -213,8 +218,8 @@
                             </tr>
                         </tbody>
                     </table>
-                    <br/>
-                    <b id="syscaltable">Functions</b><br/>
+                    <br />
+                    <b id="syscaltable">Functions</b><br />
                     <table class="table">
                         <thead>
                             <tr>
@@ -227,8 +232,8 @@
                             <tr>
                                 <th scope="row">Print</th>
                                 <td>
-                                    code: 1<br/>
-                                    link: location<br/>
+                                    code: 1<br />
+                                    link: location<br />
                                 </td>
                                 <td>raw output something</td>
                             </tr>
@@ -242,33 +247,7 @@
         </div>
     </div>
 
-    <script src="/js/compiler.js"></script>
-    <script src="/js/emulator.js"></script>
-    <script>
-
-        window.fruitflysession = new FruitflyCompilerEditor(document.getElementById("thing"), document.getElementById("mylabel"), document.getElementById("downloadlink"));
-        window.fruitflysession.attach();
-        window.fruitflysession.setOnCompiledListener(function (data) {
-            window.fruitflyemulator.insertCardridge(data);
-        });
-
-        window.fruitflyemulator = new FruitflyEmulator(document.getElementById("canvasid"), document.getElementById("mystatus"));
-        document.getElementById("inputGroupFileAddon03").addEventListener("click", function () {
-            window.fruitflyemulator.insertCardridge(window.fruitflysession.generateUint16DataArray());
-        });
-        document.getElementById("inputGroupFile03").addEventListener("change", function (evt) {
-            var file = evt.target.files[0];
-            let reader = new FileReader();
-            reader.addEventListener("loadend", function (e) {
-                var data = new Uint16Array(e.target.result);
-                window.fruitflyemulator.insertCardridge(data);
-            });
-            reader.readAsArrayBuffer(file);
-        });
-
-        window.fruitflysession.fire();
-
-    </script>
+    <script src="./js/editor.js" type="module"></script>
 </body>
 
 </html>

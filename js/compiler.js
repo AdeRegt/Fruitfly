@@ -104,7 +104,7 @@ class FruitflyCompilerToken {
     }
 }
 
-class FruitflyCompiler {
+export class FruitflyCompiler {
 
     constructor() { }
 
@@ -511,51 +511,4 @@ class FruitflyCompiler {
         return this.errorslist;
     }
 
-}
-
-class FruitflyCompilerEditor extends FruitflyCompiler {
-
-    constructor(textarea, messagearea, downloadlink) {
-        super();
-        this.textarea = textarea;
-        this.messagearea = messagearea;
-        this.downloadlink = downloadlink;
-        this.oncompiled = null;
-    }
-
-    getEditorsContent() {
-        return this.textarea.value.trim();
-    }
-
-    setMessage(message) {
-        this.messagearea.innerHTML = message;
-    }
-
-    setOnCompiledListener(fun){
-        this.oncompiled = fun;
-    }
-
-    fire(){
-        this.textarea.dispatchEvent(new Event("keyup"));
-    }
-
-    attach() {
-        var innerthis = this;
-        this.textarea.addEventListener("keyup", function (evt) {
-            var sourcecode = innerthis.getEditorsContent();
-            innerthis.setSource(sourcecode);
-            var res = innerthis.compile();
-            innerthis.setMessage(innerthis.getErrors().join("<br/>"));
-            if (res !== false) {
-                innerthis.downloadlink.href = res;
-                innerthis.downloadlink.download = "test.sxe";
-                innerthis.downloadlink.classList.remove("disabled");
-                if(innerthis.oncompiled!=null){
-                    innerthis.oncompiled(innerthis.generateUint16DataArray());
-                }
-            }else{
-                innerthis.downloadlink.classList.add("disabled");
-            }
-        });
-    }
 }
