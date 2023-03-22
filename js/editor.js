@@ -2,7 +2,7 @@ import { FruitflyEmulator } from "./emulator.js";
 import { FruitflyCompiler } from "./compiler.js";
 
 class FruitflyCompilerEditor {
-    emulator = new FruitflyCompiler();
+    compiler = new FruitflyCompiler();
 
     onCompiled = () => null;
 
@@ -31,10 +31,10 @@ class FruitflyCompilerEditor {
     attach() {
         this.textarea.addEventListener("keyup", () => {
             const sourceCode = this.getEditorsContent();
-            this.emulator.setSource(sourceCode);
+            this.compiler.setSource(sourceCode);
 
-            const res = this.emulator.compile();
-            this.setMessage(this.emulator.getErrors().join("<br/>"));
+            const res = this.compiler.compile();
+            this.setMessage(this.compiler.getErrors().join("<br/>"));
 
             // when the program is invalid we block the download button
             if (res === false) {
@@ -45,7 +45,7 @@ class FruitflyCompilerEditor {
             this.downloadLink.href = res;
             this.downloadLink.download = "test.sxe";
             this.downloadLink.classList.remove("disabled");
-            this.onCompiled(this.emulator.generateUint16DataArray());
+            this.onCompiled(this.compiler.generateUint16DataArray());
         });
     }
 }
@@ -67,7 +67,7 @@ const emulator = new FruitflyEmulator(
 document
     .getElementById("inputGroupFileAddon03")
     .addEventListener("click", function () {
-        emulator.insertCartridge(editor.generateUint16DataArray());
+        emulator.insertCartridge(editor.compiler.generateUint16DataArray());
     });
 document
     .getElementById("inputGroupFile03")
