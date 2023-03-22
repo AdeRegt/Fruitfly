@@ -46,6 +46,7 @@ class FruitflyEmulator {
         this.current_argument = (this.current_opcode_set & 0x0FFF);
         if (this.current_opcode == 0xF) { // EXIT 
             this.is_running = false;
+            clearInterval(this.timer);
             if (this.onexit != null) {
                 this.onexit(this.current_argument);
             }
