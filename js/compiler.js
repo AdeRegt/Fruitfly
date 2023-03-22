@@ -78,6 +78,7 @@ class FruitflyCompilerToken {
 
     checkType() {
         if (this.type == "STRING") {
+            this.value = this.value.replace("\\n","\n").replace("\\t","\t");
             return;
         }
         if (this.type == "NUMBER") {

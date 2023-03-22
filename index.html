@@ -79,6 +79,7 @@
                                 <th scope="col">Name</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Example</th>
+                                <th scope="col">Since</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,12 +88,14 @@
                                 <td>Exit the emulation</td>
                                 <td>Exits the virtual machine with EXITCODE as exitcode. EXITCODE should be a number</td>
                                 <td><code>EXIT 5</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">DEBUG</th>
                                 <td>Debug</td>
                                 <td>Stops emulator and shows status of registers, Instruction Pointer and the callstack</td>
                                 <td><code>DEBUG</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">SYSCALL [SYMBOL]</th>
@@ -114,102 +117,119 @@
                                     The string we want to print<br/>
                                     <code>DUMP "Hello world!\n\0"</code> <br/><br/>
                                 </td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">RETURN</th>
                                 <td>Return from subroutine</td>
                                 <td>Returns from subroutine and pop a value from the callstack</td>
                                 <td><code>RETURN</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">CALL [symbol]</th>
                                 <td>Call function</td>
                                 <td>Calls function</td>
                                 <td><code>CALL main</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">A2RA [symbol]</th>
                                 <td>Address to Register A</td>
                                 <td>Takes the address value and put it in registerA</td>
                                 <td><code>A2RA main</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">A2RB [symbol]</th>
                                 <td>Address to Register B</td>
                                 <td>Takes the address value and put it in registerB</td>
                                 <td><code>A2RB main</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">RA2A [symbol]</th>
                                 <td>Register A to address</td>
                                 <td>Puts the value of register A to address</td>
                                 <td><code>RA2A main</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">RB2A [symbol]</th>
                                 <td>Register B to address</td>
                                 <td>Puts the value of register B to address</td>
                                 <td><code>RB2A main</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">JUMP [symbol]</th>
                                 <td>Jump to function</td>
                                 <td>Jumps unconditionally to function</td>
                                 <td><code>JUMP main</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">ADD</th>
                                 <td>Add</td>
                                 <td>A = A + B</td>
                                 <td><code>ADD</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">SUB</th>
                                 <td>Substract</td>
                                 <td>A = A - B</td>
                                 <td><code>SUB</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">DIV</th>
                                 <td>Divide</td>
                                 <td>A = A / B</td>
                                 <td><code>DIV</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">MUL</th>
                                 <td>Multiply</td>
                                 <td>A = A * B</td>
                                 <td><code>MUL</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">JE [SYMBOL]</th>
                                 <td>Jump Equals</td>
                                 <td>Goto symbol if A==B</td>
                                 <td><code>JE location</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">JM [SYMBOL]</th>
                                 <td>Jump more</td>
                                 <td>Goto symbol if A>B</td>
                                 <td><code>JM location</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">JL [SYMBOL]</th>
                                 <td>Jump less</td>
                                 <td>Goto symbol if A<B</td>
                                 <td><code>JL location</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">JNE [SYMBOL]</th>
                                 <td>Jump Not Equals</td>
                                 <td>Goto symbol if A!=B</td>
                                 <td><code>JNE location</code></td>
+                                <td>1</td>
                             </tr>
                             <tr>
                                 <th scope="row">DUMP [SOMETHING]</th>
                                 <td>Raw output</td>
                                 <td>raw output something</td>
                                 <td><code>DUMP "Hello world"</code></td>
+                                <td>1</td>
                             </tr>
                         </tbody>
                     </table>
@@ -221,6 +241,7 @@
                                 <th scope="col">Name</th>
                                 <th scope="col">Structure</th>
                                 <th scope="col">Description</th>
+                                <th scope="col">Since</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -231,6 +252,7 @@
                                     link: location<br/>
                                 </td>
                                 <td>raw output something</td>
+                                <td>1</td>
                             </tr>
                         </tbody>
                     </table>
