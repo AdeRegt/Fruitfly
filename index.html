@@ -4,11 +4,16 @@
 <head>
     <title>Sanders fruitfly</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    <link href="/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    <script src="/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
         crossorigin="anonymous"></script>
+    <style>
+        .w100{
+            width: 80px !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -42,9 +47,13 @@
                 <br />
                 <br />
                 <label id="errorContainer" style="color:red"></label>
-                <a id="downloadlink" type="button" class="btn btn-info disabled">Download assembled file</a>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#opcodeModal">Show
-                    opcode list</button>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a id="downloadlink" type="button" class="btn btn-info disabled">Download assembled file</a>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#opcodeModal">Show
+                        opcode list</button>
+                </div>
+
             </div>
             <div class="col">
                 <b>Emulator</b>
@@ -61,6 +70,17 @@
                 <textarea id="canvasid" style="width:100%;height:calc(100% - 130px)" disabled></textarea>
                 <br />
                 <label id="mystatus" style="color:lightgray"></label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">IP</span><input type="text" class="form-control w100" disabled id="register_ip_show">
+                    <span class="input-group-text">A</span><input type="text" class="form-control w100" disabled id="register_a_show">
+                    <span class="input-group-text">B</span><input type="text" class="form-control w100" disabled id="register_b_show">
+                    <span class="input-group-text">Opcode</span><input type="text" class="form-control w100" disabled id="register_opcode_show">
+                    <span class="input-group-text">Argument</span><input type="text" class="form-control w100" disabled id="register_argument_show">
+                    <span class="input-group-text">Stack</span><input type="text" class="form-control w100" disabled id="register_stack_show">
+                    <span class="input-group-text">Last error</span><input type="text" class="form-control w100" disabled id="register_le_show">
+                    <span class="input-group-text">Is running</span><input class="form-control form-check-input" type="checkbox" disabled id="register_ir_show" style="height:35px;margin-top: 0px;max-width:35px">
+                    <span class="input-group-text">Ticks</span><input type="text" class="form-control w100" disabled id="register_tc_show">
+                </div>
             </div>
         </div>
     </div>
@@ -269,7 +289,7 @@
         </div>
     </div>
 
-    <script src="./js/editor.js" type="module"></script>
+    <script src="/js/editor.js" type="module"></script>
 </body>
 
 </html>

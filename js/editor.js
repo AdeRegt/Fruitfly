@@ -80,5 +80,15 @@ document
         });
         reader.readAsArrayBuffer(file);
     });
-
+emulator.setRegisterInfo(
+    document.getElementById("register_ip_show"),
+    document.getElementById("register_a_show"),
+    document.getElementById("register_b_show"),
+    document.getElementById("register_opcode_show"),
+    document.getElementById("register_argument_show"),
+    document.getElementById("register_stack_show"),
+    document.getElementById("register_le_show"),
+    document.getElementById("register_ir_show"),
+    document.getElementById("register_tc_show")
+);
 editor.fire();

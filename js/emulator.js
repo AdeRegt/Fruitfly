@@ -49,31 +49,44 @@ export class FruitflyEmulator {
         this.onexit = fun;
     }
 
+    setRegisterInfo(ip,a,b,op,ar,call,le,ir,tick){
+        this.lab_ip = ip;
+        this.lab_a = a;
+        this.lab_b = b;
+        this.lab_op = op;
+        this.lab_ar = ar;
+        this.lab_call = call;
+        this.lab_le = le;
+        this.lab_ir = ir;
+        this.lab_tick = tick;
+    }
+
+    formatString(ind){
+        var t = ind;
+        while(t.length<4){
+            t = "0" + t;
+        }
+        return t;
+    }
+
     /**
      * TODO: possibly it would be great to move all the visual logic out of the module.
      * The idea is by doing that the emulator can be easily ported, for example to run on Node or Deno.
      */
     updateStatus() {
-        this.setStatus(
-            "IP = 0x" +
-                this.instruction_pointer.toString(16) +
-                " | A = 0x" +
-                this.registerA.toString(16) +
-                " | B = 0x" +
-                this.registerB.toString(16) +
-                " | Opcode = 0x" +
-                this.current_opcode.toString(16) +
-                " | Argument = 0x" +
-                this.current_argument.toString(16) +
-                " | Stack = " +
-                this.callstack.join(",") +
-                " | LastError=" +
-                this.lastError +
-                " | IsRunning=" +
-                this.is_running +
-                " | Ticks=" +
-                this.ticksSinceBoot
-        );
+        this.lab_ip.value = "0x"+this.formatString(this.instruction_pointer.toString(16));
+        this.lab_a.value = "0x"+this.formatString(this.registerA.toString(16));
+        this.lab_b.value = "0x"+this.formatString(this.registerB.toString(16));
+        this.lab_op.value = "0x"+this.formatString(this.current_opcode.toString(16));
+        this.lab_ar.value = "0x"+this.formatString(this.current_argument.toString(16));
+        this.lab_call.value = this.callstack.join(",");
+        this.lab_le.value = this.lastError;
+        if(this.is_running){
+            this.lab_ir.setAttribute("checked" ,this.is_running);
+        }else{
+            this.lab_ir.removeAttribute("checked");
+        }
+        this.lab_tick.value = this.ticksSinceBoot;
     }
 
     stop() {
@@ -107,6 +120,7 @@ export class FruitflyEmulator {
 
     doExit() {
         this.stop();
+        this.updateStatus();
 
         if (this.onexit != null) {
             this.onexit(this.current_argument);
