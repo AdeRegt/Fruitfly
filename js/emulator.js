@@ -16,7 +16,7 @@ export class FruitflyEmulator {
         [opcodes.CALL]: this.doCall,
         [opcodes.RETURN]: this.doReturn,
         [opcodes.SYSCALL]: this.doSystemCall,
-        [opcodes.DEBUG]: this.doDebug,
+        // [opcodes.DEBUG]: this.doDebug,
         [opcodes.EXIT]: this.doExit,
     };
 
@@ -210,6 +210,9 @@ export class FruitflyEmulator {
         }
         if (this.current_argument == 4) {
             this.A *= this.B;
+        }
+        if (this.current_argument == 16){
+            this.doDebug();
         }
         this.instruction_pointer++;
     }

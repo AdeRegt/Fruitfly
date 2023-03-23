@@ -16,6 +16,6 @@ export const opcodes = {
     CALL: 0xb,
     RETURN: 0xc,
     SYSCALL: 0xd,
-    DEBUG: 0xe,
+    // DEBUG: 0xe,
     EXIT: 0xf,
 };
