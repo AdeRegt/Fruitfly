@@ -265,7 +265,7 @@ export class FruitflyCompiler {
                     });
                 } else if (current_token.value == SXE_OPWORD_RETURN) {
                     this.ast.push({
-                        bytecode: this.format(opcodes.RETURN, 0),
+                        bytecode: this.format(opcodes.FLAGS, 17),
                         label: null,
                     });
                 } else if (current_token.value == SXE_OPWORD_CALL) {
