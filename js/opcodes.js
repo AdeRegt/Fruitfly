@@ -14,8 +14,8 @@ export const opcodes = {
     A2RB: 0x9,
     A2RA: 0xa,
     CALL: 0xb,
-    // RETURN: 0xc,
+    V2RA: 0xc,
     SYSCALL: 0xd,
-    // DEBUG: 0xe,
+    V2RB: 0xe,
     EXIT: 0xf,
 };

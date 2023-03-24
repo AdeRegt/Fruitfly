@@ -14,9 +14,9 @@ export class FruitflyEmulator {
         [opcodes.A2RB]: this.doA2RB,
         [opcodes.A2RA]: this.doA2RA,
         [opcodes.CALL]: this.doCall,
-        // [opcodes.RETURN]: this.doReturn,
+        [opcodes.SXE_OPWORD_V2RA]: this.doV2RA,
         [opcodes.SYSCALL]: this.doSystemCall,
-        // [opcodes.DEBUG]: this.doDebug,
+        [opcodes.SXE_OPWORD_V2RB]: this.doV2RB,
         [opcodes.EXIT]: this.doExit,
     };
 
@@ -62,6 +62,12 @@ export class FruitflyEmulator {
     }
 
     formatString(ind) {
+        if(typeof(ind)==="undefined"){
+            return "Error";
+        }
+        if(Number.isNaN(ind)){
+            return "Error";
+        }
         var t = ind;
         while (t.length < 4) {
             t = "0" + t;
@@ -96,7 +102,7 @@ export class FruitflyEmulator {
 
     stop() {
         this.is_running = false;
-        clearInterval(this.timer);
+        window.clearInterval(this.timer);
     }
 
     tick() {
@@ -169,6 +175,16 @@ export class FruitflyEmulator {
         this.instruction_pointer++;
     }
 
+    doV2RA(){
+        this.A = this.current_argument;
+        this.instruction_pointer++;
+    }
+
+    doV2RB(){
+        this.B = this.current_argument;
+        this.instruction_pointer++;
+    }
+
     doReturn() {
         this.instruction_pointer = this.callstack.pop();
     }
@@ -200,7 +216,6 @@ export class FruitflyEmulator {
 
     doJump() {
         this.instruction_pointer = this.current_argument;
-        this.instruction_pointer++;
     }
 
     doMath() {

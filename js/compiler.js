@@ -54,6 +54,12 @@ const SXE_OPWORD_DIV = "DIV";
 const SXE_OPWORD_MUL = "MUL";
 const SXE_OPWORD_DUMP = "DUMP";
 
+// ADDR to REGA [ADDR] OK
+const SXE_OPWORD_V2RA = "V2RA";
+
+// ADDR to REGB [ADDR] OK
+const SXE_OPWORD_V2RB = "V2RB";
+
 const VALID_OPCODES = [
     SXE_OPWORD_EXIT,
     SXE_OPWORD_DEBUG,
@@ -74,6 +80,8 @@ const VALID_OPCODES = [
     SXE_OPWORD_DIV,
     SXE_OPWORD_MUL,
     SXE_OPWORD_DUMP,
+    SXE_OPWORD_V2RA,
+    SXE_OPWORD_V2RB
 ];
 
 class FruitflyCompilerToken {
