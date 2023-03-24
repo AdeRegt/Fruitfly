@@ -61,7 +61,7 @@ export class FruitflyEmulator {
         this.lab_tick = tick;
     }
 
-    formatString(ind) {
+    formatString(ind,len) {
         if(typeof(ind)==="undefined"){
             return "Error";
         }
@@ -69,7 +69,7 @@ export class FruitflyEmulator {
             return "Error";
         }
         var t = ind;
-        while (t.length < 4) {
+        while (t.length < len) {
             t = "0" + t;
         }
         return t;
@@ -82,16 +82,16 @@ export class FruitflyEmulator {
     updateStatus() {
         if(!Number.isNaN(this.instruction_pointer)){
             this.lab_ip.innerHTML =
-                "0x" + this.formatString(this.instruction_pointer.toString(16));
+                "0x" + this.formatString(this.instruction_pointer.toString(16),3);
         }
         this.lab_a.innerHTML =
-            "0x" + this.formatString(this.registerA.toString(16));
+            "0x" + this.formatString(this.registerA.toString(16),4);
         this.lab_b.innerHTML =
-            "0x" + this.formatString(this.registerB.toString(16));
+            "0x" + this.formatString(this.registerB.toString(16),4);
         this.lab_op.innerHTML =
-            "0x" + this.formatString(this.current_opcode.toString(16));
+            "0x" + this.formatString(this.current_opcode.toString(16),1);
         this.lab_ar.innerHTML =
-            "0x" + this.formatString(this.current_argument.toString(16));
+            "0x" + this.formatString(this.current_argument.toString(16),3);
         this.lab_call.innerHTML = this.callstack.join(",");
         this.lab_le.value = this.lastError;
         if (this.is_running) {
