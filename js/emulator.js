@@ -80,8 +80,10 @@ export class FruitflyEmulator {
      * The idea is by doing that the emulator can be easily ported, for example to run on Node or Deno.
      */
     updateStatus() {
-        this.lab_ip.innerHTML =
-            "0x" + this.formatString(this.instruction_pointer.toString(16));
+        if(!Number.isNaN(this.instruction_pointer)){
+            this.lab_ip.innerHTML =
+                "0x" + this.formatString(this.instruction_pointer.toString(16));
+        }
         this.lab_a.innerHTML =
             "0x" + this.formatString(this.registerA.toString(16));
         this.lab_b.innerHTML =
@@ -144,7 +146,6 @@ export class FruitflyEmulator {
 
     doDebug() {
         window.alert(this.getStatus());
-        this.instruction_pointer++;
     }
 
     doSystemCall() {
@@ -235,7 +236,7 @@ export class FruitflyEmulator {
             this.doDebug();
         }
         if (this.current_argument == 17){
-            this.doReturn();
+            return this.doReturn();
         }
         this.instruction_pointer++;
     }
