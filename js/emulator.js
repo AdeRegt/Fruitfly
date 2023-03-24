@@ -49,7 +49,7 @@ export class FruitflyEmulator {
         this.onexit = fun;
     }
 
-    setRegisterInfo(ip,a,b,op,ar,call,le,ir,tick){
+    setRegisterInfo(ip, a, b, op, ar, call, le, ir, tick) {
         this.lab_ip = ip;
         this.lab_a = a;
         this.lab_b = b;
@@ -61,9 +61,9 @@ export class FruitflyEmulator {
         this.lab_tick = tick;
     }
 
-    formatString(ind){
+    formatString(ind) {
         var t = ind;
-        while(t.length<4){
+        while (t.length < 4) {
             t = "0" + t;
         }
         return t;
@@ -74,19 +74,24 @@ export class FruitflyEmulator {
      * The idea is by doing that the emulator can be easily ported, for example to run on Node or Deno.
      */
     updateStatus() {
-        this.lab_ip.value = "0x"+this.formatString(this.instruction_pointer.toString(16));
-        this.lab_a.value = "0x"+this.formatString(this.registerA.toString(16));
-        this.lab_b.value = "0x"+this.formatString(this.registerB.toString(16));
-        this.lab_op.value = "0x"+this.formatString(this.current_opcode.toString(16));
-        this.lab_ar.value = "0x"+this.formatString(this.current_argument.toString(16));
-        this.lab_call.value = this.callstack.join(",");
+        this.lab_ip.innerHTML =
+            "0x" + this.formatString(this.instruction_pointer.toString(16));
+        this.lab_a.innerHTML =
+            "0x" + this.formatString(this.registerA.toString(16));
+        this.lab_b.innerHTML =
+            "0x" + this.formatString(this.registerB.toString(16));
+        this.lab_op.innerHTML =
+            "0x" + this.formatString(this.current_opcode.toString(16));
+        this.lab_ar.innerHTML =
+            "0x" + this.formatString(this.current_argument.toString(16));
+        this.lab_call.innerHTML = this.callstack.join(",");
         this.lab_le.value = this.lastError;
-        if(this.is_running){
-            this.lab_ir.setAttribute("checked" ,this.is_running);
-        }else{
+        if (this.is_running) {
+            this.lab_ir.setAttribute("checked", this.is_running);
+        } else {
             this.lab_ir.removeAttribute("checked");
         }
-        this.lab_tick.value = this.ticksSinceBoot;
+        this.lab_tick.innerHTML = this.ticksSinceBoot;
     }
 
     stop() {
@@ -211,7 +216,7 @@ export class FruitflyEmulator {
         if (this.current_argument == 4) {
             this.A *= this.B;
         }
-        if (this.current_argument == 16){
+        if (this.current_argument == 16) {
             this.doDebug();
         }
         if (this.current_argument == 17){
