@@ -10,40 +10,32 @@
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
         crossorigin="anonymous"></script>
     <style>
-        .w100{
+        .w100 {
             width: 80px !important;
         }
+
     </style>
 </head>
 
 <body>
-    <div class="container text-center">
-        <div class="row">
-            <div class="col col-lg-3">
-                <img src="/favicon.png" height="100">
+    <div class="container">
+        <div class="row text-center pt-2 pb-3">
+            <div class="col-lg-3">
+                <img src="/favicon.png" alt="Logo" height="75">
             </div>
-            <div class="col col-lg-7">
+            <div class="col-lg-7">
                 <h1>Fruitfly</h1>
-                <i>Created by <a href="https://github.com/AdeRegt">Alexandros de Regt</a> and <a href="https://github.com/gil0mendes">@gil0mendes</a> 2023, See <a href="https://github.com/AdeRegt/Fruitfly">Github</a> for
-                    the sourcecode</i><br />
+                <i>Created by <a href="https://github.com/AdeRegt">Alexandros de Regt</a> and <a
+                        href="https://github.com/gil0mendes">@gil0mendes</a> 2023; See <a
+                        href="https://github.com/AdeRegt/Fruitfly">GitHub</a> for
+                    the source code.</i><br />
             </div>
         </div>
+
         <div class="row" style="height: calc(100% - 250px);">
-            <div class="col">
-                <b>Editor</b>
-                <br />
-                <br />
-                <textarea style="width: 100%; height: calc(100% - 50px)" id="thing">
-                    call main
-                    exit 1
-                    main:
-                    syscall print_structure
-                    return 
-                    
-                    print_structure:
-                    dump 1
-                    dump "hello world" 
-                </textarea>
+            <div class="col-md-6">
+                <h2>Editor</h2>
+                <textarea style="width: 100%; height: calc(100% - 50px)" id="thing"></textarea>
                 <br />
                 <br />
                 <label id="errorContainer" style="color:red"></label>
@@ -53,12 +45,10 @@
                         data-bs-target="#opcodeModal">Show
                         opcode list</button>
                 </div>
-
             </div>
-            <div class="col">
-                <b>Emulator</b>
-                <br />
-                <br />
+
+            <div class="col-md-6">
+                <h2>Emulator</h2>
                 <div class="input-group mb-3">
                     <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon03">Use from
                         editor</button>
@@ -70,16 +60,57 @@
                 <textarea id="canvasid" style="width:100%;height:calc(100% - 130px)" disabled></textarea>
                 <br />
                 <label id="mystatus" style="color:lightgray"></label>
-                <div class="input-group mb-3">
-                    <span class="input-group-text">IP</span><input type="text" class="form-control w100" disabled id="register_ip_show">
-                    <span class="input-group-text">A</span><input type="text" class="form-control w100" disabled id="register_a_show">
-                    <span class="input-group-text">B</span><input type="text" class="form-control w100" disabled id="register_b_show">
-                    <span class="input-group-text">Opcode</span><input type="text" class="form-control w100" disabled id="register_opcode_show">
-                    <span class="input-group-text">Argument</span><input type="text" class="form-control w100" disabled id="register_argument_show">
-                    <span class="input-group-text">Stack</span><input type="text" class="form-control w100" disabled id="register_stack_show">
-                    <span class="input-group-text">Last error</span><input type="text" class="form-control w100" disabled id="register_le_show">
-                    <span class="input-group-text">Is running</span><input class="form-control form-check-input" type="checkbox" disabled id="register_ir_show" style="height:35px;margin-top: 0px;max-width:35px">
-                    <span class="input-group-text">Ticks</span><input type="text" class="form-control w100" disabled id="register_tc_show">
+
+                <div class="card">
+                    <div class="card-header">Registers</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-3">
+                                <strong>A:</strong>
+                                <span class="register-value hex-value" id="register_a_show">0x0000</span>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <strong>B:</strong>
+                                <span class="register-value hex-value" id="register_b_show">0x0000</span>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <strong>IP:</strong>
+                                <span class="register-value hex-value" id="register_ip_show">0x0000</span>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <strong>Stack:</strong>
+                                <span class="register-value hex-value" id="register_stack_show">0x0000</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <hr />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-3">
+                                <strong>Opcode:</strong>
+                                <span class="register-value hex-value" id="register_opcode_show">0x0000</span>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <strong>Argument:</strong>
+                                <span class="register-value hex-value" id="register_argument_show">-</span>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <strong>Running:</strong>
+                                <span class="register-value hex-value" id="register_ir_show">0</span>
+                            </div>
+                            <div class="col-xs-6 col-sm-3">
+                                <strong>Ticks:</strong>
+                                <span class="register-value hex-value" id="register_tc_show">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group my-3">
+                    <span class="input-group-text">Last error</span><input type="text" class="form-control w100"
+                        disabled id="register_le_show">
                 </div>
             </div>
         </div>

@@ -1,6 +1,18 @@
 import { FruitflyEmulator } from "./emulator.js";
 import { FruitflyCompiler } from "./compiler.js";
 
+const DEFAULT_PROGRAM = `
+  call main
+  exit 1
+main:
+  syscall print_structure
+  return 
+
+print_structure:
+  dump 1
+  dump "hello world"
+`;
+
 class FruitflyCompilerEditor {
     compiler = new FruitflyCompiler();
 
@@ -50,11 +62,15 @@ class FruitflyCompilerEditor {
     }
 }
 
+// set default program
+document.getElementById("thing").value = DEFAULT_PROGRAM;
+
 const editor = new FruitflyCompilerEditor(
     document.getElementById("thing"),
     document.getElementById("errorContainer"),
     document.getElementById("downloadlink")
 );
+
 editor.attach();
 editor.setOnCompiledListener(function (data) {
     emulator.insertCartridge(data);
