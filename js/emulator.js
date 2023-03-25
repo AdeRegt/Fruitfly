@@ -96,7 +96,7 @@ export class FruitflyEmulator {
             return "Error";
         }
         var t = ind;
-        while (t.length < 4) {
+        while (t.length < len) {
             t = "0" + t;
         }
         return t;

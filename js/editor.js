@@ -1,6 +1,7 @@
 import { FruitflyEmulator } from "./emulator.js";
 import { FruitflyCompiler } from "./compiler.js";
 import { toHexString } from "./utils.js";
+import { MikeBASICCompiler } from "./mikebasic.js";
 
 const DEFAULT_PROGRAM = `
   call main
@@ -41,24 +42,28 @@ class FruitflyCompilerEditor {
         this.textarea.dispatchEvent(new Event("keyup"));
     }
 
+    offer(sourceCode){
+        this.compiler.setSource(sourceCode);
+
+        const res = this.compiler.compile();
+        this.setMessage(this.compiler.getErrors().join("<br/>"));
+
+        // when the program is invalid we block the download button
+        if (res === false) {
+            this.downloadLink.classList.add("disabled");
+            return;
+        }
+
+        this.downloadLink.href = res;
+        this.downloadLink.download = "test.sxe";
+        this.downloadLink.classList.remove("disabled");
+        this.onCompiled(this.compiler.generateUint16DataArray());
+    }
+
     attach() {
         this.textarea.addEventListener("keyup", () => {
             const sourceCode = this.getEditorsContent();
-            this.compiler.setSource(sourceCode);
-
-            const res = this.compiler.compile();
-            this.setMessage(this.compiler.getErrors().join("<br/>"));
-
-            // when the program is invalid we block the download button
-            if (res === false) {
-                this.downloadLink.classList.add("disabled");
-                return;
-            }
-
-            this.downloadLink.href = res;
-            this.downloadLink.download = "test.sxe";
-            this.downloadLink.classList.remove("disabled");
-            this.onCompiled(this.compiler.generateUint16DataArray());
+            this.offer(sourceCode);
         });
     }
 }
@@ -241,6 +246,15 @@ document
     });
 
 editor.fire();
+
+const mbcompiler = new MikeBASICCompiler(
+    document.getElementById("mbeditor"),
+    document.getElementById("errorContainer"),
+);
+mbcompiler.attach();
+mbcompiler.setOnCompiledListener(function(data){
+    editor.offer(data);
+});
 
 const uiController = new UIController(emulator);
 uiController.init();
