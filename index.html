@@ -13,7 +13,6 @@
         .w100 {
             width: 80px !important;
         }
-
     </style>
 </head>
 
@@ -37,48 +36,38 @@
                 <h2>Editor</h2>
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                      <button class="nav-link active" id="ff-tab" data-bs-toggle="tab" data-bs-target="#ff-tab-pane" type="button" role="tab" aria-controls="ff-tab-pane" aria-selected="true">Fruitfly</button>
+                        <button class="nav-link active" id="ff-tab" data-bs-toggle="tab" data-bs-target="#ff-tab-pane"
+                            type="button" role="tab" aria-controls="ff-tab-pane" aria-selected="true">Fruitfly</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                      <button class="nav-link" id="mb-tab" data-bs-toggle="tab" data-bs-target="#mb-tab-pane" type="button" role="tab" aria-controls="mb-tab-pane" aria-selected="false">MikeBASIC</button>
+                        <button class="nav-link" id="mb-tab" data-bs-toggle="tab" data-bs-target="#mb-tab-pane"
+                            type="button" role="tab" aria-controls="mb-tab-pane"
+                            aria-selected="false">MikeBASIC</button>
                     </li>
-                  </ul>
-                  <div class="tab-content" id="myTabContent" style="width: 100%; height: 100%">
-                    <div class="tab-pane fade show active" id="ff-tab-pane" role="tabpanel" aria-labelledby="ff-tab" tabindex="0" style="width: 100%; height: 100%">
-                        <textarea id="thing" style="width: 100%; height: 100%"></textarea>
+                </ul>
+                <div class="tab-content" id="myTabContent" style="width: 100%">
+                    <div class="tab-pane fade show active" id="ff-tab-pane" role="tabpanel" aria-labelledby="ff-tab"
+                        tabindex="0" style="width: 100%">
+                        <textarea id="thing" style="width: 100%" rows="14"></textarea>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#opcodeModal">Show
                             opcode list</button>
                     </div>
-                    <div class="tab-pane fade" id="mb-tab-pane" role="tabpanel" aria-labelledby="mb-tab" tabindex="0" style="width: 100%; height: 100%">
-                        <textarea id="mbeditor" style="width: 100%; height: 100%"></textarea>
-                        <a href="https://mikeos.sourceforge.net/handbook-appdev-basic.html" target="_blank" type="button" class="btn btn-primary">See documentation</a>
+                    <div class="tab-pane fade" id="mb-tab-pane" role="tabpanel" aria-labelledby="mb-tab" tabindex="0"
+                        style="width: 100%">
+                        <textarea id="mbeditor" style="width: 100%" rows="14"></textarea>
+                        <a href="https://mikeos.sourceforge.net/handbook-appdev-basic.html" target="_blank"
+                            type="button" class="btn btn-primary">See documentation</a>
                     </div>
-                  </div>
-                
-                <br />
+                </div>
                 <br />
                 <label id="errorContainer" style="color:red"></label>
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <a id="downloadlink" type="button" class="btn btn-info disabled">Download assembled file</a>
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        Memory
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-hover" id="memory-table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">0x</th>
-                                    <th scope="col">Hex</th>
-                                    <th scope="col">Instruction</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                  </div>
+
+                <br />
+                
             </div>
 
             <div class="col-md-6">
@@ -95,6 +84,33 @@
                 <br />
                 <label id="mystatus" style="color:lightgray"></label>
 
+                <div class="input-group my-3">
+                    <span class="input-group-text">Last error</span><input type="text" class="form-control w100"
+                        disabled id="register_le_show">
+                </div>
+            </div>
+        </div>
+        <div class="row" style="height: 100%;">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Memory
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover" id="memory-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">0x</th>
+                                    <th scope="col">Hex</th>
+                                    <th scope="col">Instruction</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">Registers</div>
                     <div class="card-body">
@@ -140,11 +156,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="input-group my-3">
-                    <span class="input-group-text">Last error</span><input type="text" class="form-control w100"
-                        disabled id="register_le_show">
                 </div>
             </div>
         </div>

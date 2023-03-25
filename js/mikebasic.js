@@ -127,7 +127,6 @@ export class MikeBASICCompiler{
         this.error = [];
         for(var i = 0 ; i < this.tokens.length ; i++){
             var mainSubject = this.tokens[i];
-            console.log("@",mainSubject);
             var functionname = mainSubject.value.toLowerCase();
             if(functionname=="alert"){
                 i++;
