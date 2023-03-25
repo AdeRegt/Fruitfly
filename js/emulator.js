@@ -1,4 +1,4 @@
-import { opcodes } from "./opcodes.js";
+import { opcodes, opcodeToString } from "./opcodes.js";
 
 export class FruitflyEmulator {
     operations = {
@@ -20,21 +20,60 @@ export class FruitflyEmulator {
         [opcodes.EXIT]: this.doExit,
     };
 
+    /**
+     * Listeners for any memory change.
+     *
+     * @type {Array<(event: {type: string, data: any}) => void>}
+     */
+    listeners = [];
+
+    registers = {
+        a: 0,
+        b: 0,
+        pc: 0,
+    };
+
     constructor(canvas, status) {
         this.rawcanvas = canvas;
         this.rawstatus = status;
         this.memory = new Uint16Array(4103);
-        this.instruction_pointer = 0;
-        this.registerA = 0;
-        this.registerB = 0;
         this.callstack = [];
         this.current_opcode = 0;
         this.current_argument = 0;
-        this.is_running = false;
+        this.isRunning = false;
         this.lastError = null;
         this.onexit = null;
         this.ticksSinceBoot = 0;
         this.timer = null;
+    }
+
+    setRegister(register, value) {
+        this.registers[register] = value;
+        this.notifyListeners({
+            event: "regset",
+            data: {
+                register,
+                value,
+            },
+        });
+    }
+
+    /**
+     * Registers a new listener for emulator events.
+     *
+     * @param {(event: {type: string, data: any}) => void} newListener
+     */
+    addListener(newListener) {
+        this.listeners.push(newListener);
+    }
+
+    /**
+     * Send an event to all registered listeners.
+     *
+     * @param {{type: string, data: any}} event
+     */
+    notifyListeners(event) {
+        this.listeners.forEach((listener) => listener(event));
     }
 
     setStatus(message) {
@@ -49,23 +88,11 @@ export class FruitflyEmulator {
         this.onexit = fun;
     }
 
-    setRegisterInfo(ip, a, b, op, ar, call, le, ir, tick) {
-        this.lab_ip = ip;
-        this.lab_a = a;
-        this.lab_b = b;
-        this.lab_op = op;
-        this.lab_ar = ar;
-        this.lab_call = call;
-        this.lab_le = le;
-        this.lab_ir = ir;
-        this.lab_tick = tick;
-    }
-
-    formatString(ind,len) {
-        if(typeof(ind)==="undefined"){
+    formatString(ind) {
+        if (typeof ind === "undefined") {
             return "Error";
         }
-        if(Number.isNaN(ind)){
+        if (Number.isNaN(ind)) {
             return "Error";
         }
         var t = ind;
@@ -75,43 +102,26 @@ export class FruitflyEmulator {
         return t;
     }
 
-    /**
-     * TODO: possibly it would be great to move all the visual logic out of the module.
-     * The idea is by doing that the emulator can be easily ported, for example to run on Node or Deno.
-     */
-    updateStatus() {
-        if(!Number.isNaN(this.instruction_pointer)){
-            this.lab_ip.innerHTML =
-                "0x" + this.formatString(this.instruction_pointer.toString(16),3);
-        }
-        this.lab_a.innerHTML =
-            "0x" + this.formatString(this.registerA.toString(16),4);
-        this.lab_b.innerHTML =
-            "0x" + this.formatString(this.registerB.toString(16),4);
-        this.lab_op.innerHTML =
-            "0x" + this.formatString(this.current_opcode.toString(16),1);
-        this.lab_ar.innerHTML =
-            "0x" + this.formatString(this.current_argument.toString(16),3);
-        this.lab_call.innerHTML = this.callstack.join(",");
-        this.lab_le.value = this.lastError;
-        if (this.is_running) {
-            this.lab_ir.setAttribute("checked", this.is_running);
-        } else {
-            this.lab_ir.removeAttribute("checked");
-        }
-        this.lab_tick.innerHTML = this.ticksSinceBoot;
-    }
-
     stop() {
-        this.is_running = false;
+        this.isRunning = false;
         window.clearInterval(this.timer);
+
+        this.notifyListeners({
+            event: "state",
+            data: {
+                state: "stopped",
+            },
+        });
     }
 
     tick() {
         this.ticksSinceBoot++;
-        this.updateStatus();
+        this.notifyListeners({
+            event: "tick",
+            data: { count: this.ticksSinceBoot },
+        });
 
-        if (!this.is_running) {
+        if (!this.isRunning) {
             return;
         }
 
@@ -119,13 +129,18 @@ export class FruitflyEmulator {
             return;
         }
 
-        this.current_opcode_set = this.memory[this.instruction_pointer];
-        this.current_opcode = (this.current_opcode_set & 0xf000) >> 12;
-        this.current_argument = this.current_opcode_set & 0x0fff;
+        this.current_opcode_set = this.memory[this.registers.pc];
+        this.current_opcode = this.getOpcodeFromInstruction(
+            this.current_opcode_set
+        );
+        this.current_argument = this.getInstructionArguments(
+            this.current_opcode_set
+        );
 
         if (!this.operations[this.current_opcode]) {
             this.lastError = `Unknown opcode: ${this.current_opcode}`;
             this.stop();
+            return;
         }
 
         this.operations[this.current_opcode].call(this);
@@ -133,7 +148,6 @@ export class FruitflyEmulator {
 
     doExit() {
         this.stop();
-        this.updateStatus();
 
         if (this.onexit != null) {
             this.onexit(this.current_argument);
@@ -141,7 +155,7 @@ export class FruitflyEmulator {
     }
 
     doNop() {
-        this.instruction_pointer++;
+        this.setRegister("pc", this.registers.pc + 1);
     }
 
     doDebug() {
@@ -173,103 +187,103 @@ export class FruitflyEmulator {
             this.stop();
             return;
         }
-        this.instruction_pointer++;
+
+        this.setRegister("pc", this.registers.pc + 1);
     }
 
-    doV2RA(){
+    doV2RA() {
         this.A = this.current_argument;
         this.instruction_pointer++;
     }
 
-    doV2RB(){
+    doV2RB() {
         this.B = this.current_argument;
         this.instruction_pointer++;
     }
 
     doReturn() {
-        this.instruction_pointer = this.callstack.pop();
+        this.setRegister("pc", this.callstack.pop());
     }
 
     doCall() {
-        this.callstack.push(this.instruction_pointer + 1);
-        this.instruction_pointer = this.current_argument;
+        this.callstack.push(this.registers.pc + 1);
+
+        this.setRegister("pc", this.current_argument);
     }
 
     doA2RA() {
-        this.A = this.memory[this.current_argument];
-        this.instruction_pointer++;
+        this.setRegister("a", this.memory[this.current_argument]);
+        this.setRegister("pc", this.registers.pc + 1);
     }
 
     doA2RB() {
-        this.B = this.memory[this.current_argument];
-        this.instruction_pointer++;
+        this.setRegister("b", this.memory[this.current_argument]);
+        this.setRegister("pc", this.registers.pc + 1);
     }
 
     doRA2A() {
-        this.memory[this.current_argument] = this.A;
-        this.instruction_pointer++;
+        this.memory[this.current_argument] = this.registers.a;
+
+        this.setRegister("pc", this.registers.pc + 1);
     }
 
     doRB2A() {
-        this.memory[this.current_argument] = this.B;
-        this.instruction_pointer++;
+        this.memory[this.current_argument] = this.registers.b;
+
+        this.setRegister("pc", this.registers.pc + 1);
     }
 
     doJump() {
-        this.instruction_pointer = this.current_argument;
+        this.setRegister("pc", this.current_argument);
     }
 
     doMath() {
         if (this.current_argument == 1) {
-            this.A += this.B;
-        }
-        if (this.current_argument == 2) {
-            this.A -= this.B;
-        }
-        if (this.current_argument == 3) {
-            this.A /= this.B;
-        }
-        if (this.current_argument == 4) {
-            this.A *= this.B;
-        }
-        if (this.current_argument == 16) {
+            this.setRegister("a", this.registers.a + this.registers.b);
+        } else if (this.current_argument == 2) {
+            this.setRegister("a", this.registers.a - this.registers.b);
+        } else if (this.current_argument == 3) {
+            this.setRegister("a", this.registers.a / this.registers.b);
+        } else if (this.current_argument == 4) {
+            this.setRegister("a", this.registers.a * this.registers.b);
+        } else if (this.current_argument == 16) {
             this.doDebug();
-        }
-        if (this.current_argument == 17){
+        } else if (this.current_argument == 17) {
             return this.doReturn();
         }
-        this.instruction_pointer++;
+
+        this.setRegister("pc", this.registers.pc + 1);
     }
 
     doJE() {
-        if (this.A == this.B) {
-            this.instruction_pointer = this.current_argument;
+        if (this.registers.a === this.registers.b) {
+            this.setRegister("pc", this.current_argument);
         } else {
-            this.instruction_pointer++;
+            this.setRegister("pc", this.registers.pc + 1);
         }
     }
 
     doJM() {
-        if (this.A > this.B) {
-            this.instruction_pointer = this.current_argument;
+        if (this.registers.a > this.registers.b) {
+            this.setRegister("pc", this.current_argument);
         } else {
-            this.instruction_pointer++;
+            this.setRegister("pc", this.registers.pc + 1);
         }
     }
 
     doJL() {
-        if (this.A < this.B) {
-            this.instruction_pointer = this.current_argument;
+        if (this.registers.a < this.registers.b) {
+            this.setRegister("pc", this.current_argument);
         } else {
-            this.instruction_pointer++;
+            this.setRegister("pc", this.registers.pc + 1);
         }
     }
 
     doJNE() {
-        if (this.A != this.B) {
-            this.instruction_pointer = this.current_argument;
+        if (this.registers.a != this.registers.b) {
+            this.setRegister("pc", this.current_argument);
         } else {
-            this.instruction_pointer++;
+            this.setRegister("pc", this.registers.pc + 1);
         }
     }
 
@@ -295,15 +309,30 @@ export class FruitflyEmulator {
         }
         // release to the emulator
         this.memory = dataset.subarray(4);
-        this.instruction_pointer = 0;
-        this.registerA = 0;
-        this.registerB = 0;
+        this.registers = {
+            a: 0,
+            b: 0,
+            pc: 0,
+        };
         this.callstack = [];
         this.lastError = null;
         this.ticksSinceBoot = 0;
         this.rawcanvas.innerHTML =
             "Application is running since " + new Date().toISOString() + "\n";
-        this.is_running = true;
+        this.isRunning = true;
         this.timer = window.setInterval(this.tick.bind(this), 1);
+    }
+
+    getOpcodeFromInstruction(instruction) {
+        return (instruction & 0xf000) >> 12;
+    }
+
+    getInstructionArguments(instruction) {
+        return instruction & 0x0fff;
+    }
+
+    opcodeAddressToString(address) {
+        const opcode = this.getOpcodeFromInstruction(this.memory[address]);
+        return opcodeToString(opcode);
     }
 }
