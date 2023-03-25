@@ -171,7 +171,6 @@ class UIController {
             const address = startPosition + index;
             const data = this.emulator.memory[address];
 
-            console.log(">>", address, this.emulator.registers.pc);
             if (address === this.emulator.registers.pc) {
                 row.classList.add("table-primary");
             } else {

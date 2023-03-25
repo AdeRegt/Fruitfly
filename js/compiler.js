@@ -208,8 +208,9 @@ export class FruitflyCompiler {
         return (arg & 0xf000) >> 12;
     }
 
-    format(opcode, arg) {
-        return (opcode * 0x1000) | arg;
+    format(opcode, oparg) {
+        const value = (Number(opcode) * 0x1000) | Number(oparg);
+        return value;
     }
 
     generateAST() {
@@ -589,6 +590,48 @@ export class FruitflyCompiler {
                         );
                         return;
                     }
+                } else if (current_token.value == SXE_OPWORD_V2RA) {
+                    i++;
+                    var temp_token = this.tokens[i];
+                    if (typeof temp_token === "undefined") {
+                        this.errorslist.push(
+                            "Expected: V2RA [NUMBER], found: V2RA EOF"
+                        );
+                        return;
+                    }
+                    if (!(temp_token.getType() == "NUMBER")) {
+                        this.errorslist.push(
+                            "Expected: V2RA [NUMBER], found: V2RA " +
+                                temp_token.getType()
+                        );
+                        return;
+                    }
+                    var vc = temp_token.value;
+                    this.ast.push({
+                        bytecode: this.format(opcodes.V2RA, vc),
+                        label: null,
+                    });
+                } else if (current_token.value == SXE_OPWORD_V2RB) {
+                    i++;
+                    var temp_token = this.tokens[i];
+                    if (typeof temp_token === "undefined") {
+                        this.errorslist.push(
+                            "Expected: V2RB [NUMBER], found: V2RB EOF"
+                        );
+                        return;
+                    }
+                    if (!(temp_token.getType() == "NUMBER")) {
+                        this.errorslist.push(
+                            "Expected: V2RB [SYMBOL], found: V2RB " +
+                                temp_token.getType()
+                        );
+                        return;
+                    }
+                    var vc = temp_token.value;
+                    this.ast.push({
+                        bytecode: this.format(opcodes.V2RB, vc),
+                        label: null,
+                    });
                 }
             }
         }
@@ -603,7 +646,7 @@ export class FruitflyCompiler {
                     this.calltable[thisone.label]
                 );
                 if ((thisone.bytecode & 0xfff) == 0xfff) {
-                    console.error("unresolved symbol: " + thisone.label);
+                    this.errorslist.push("unresolved symbol: " + thisone.label);
                 }
             }
         }

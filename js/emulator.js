@@ -14,9 +14,9 @@ export class FruitflyEmulator {
         [opcodes.A2RB]: this.doA2RB,
         [opcodes.A2RA]: this.doA2RA,
         [opcodes.CALL]: this.doCall,
-        [opcodes.SXE_OPWORD_V2RA]: this.doV2RA,
+        [opcodes.V2RA]: this.doV2RA,
         [opcodes.SYSCALL]: this.doSystemCall,
-        [opcodes.SXE_OPWORD_V2RB]: this.doV2RB,
+        [opcodes.V2RB]: this.doV2RB,
         [opcodes.EXIT]: this.doExit,
     };
 
@@ -159,7 +159,7 @@ export class FruitflyEmulator {
     }
 
     doDebug() {
-        window.alert(this.getStatus());
+        window.alert(JSON.stringify(this.registers));
     }
 
     doSystemCall() {
@@ -192,13 +192,13 @@ export class FruitflyEmulator {
     }
 
     doV2RA() {
-        this.A = this.current_argument;
-        this.instruction_pointer++;
+        this.setRegister("a", this.current_argument);
+        this.setRegister("pc", this.registers.pc + 1);
     }
 
     doV2RB() {
-        this.B = this.current_argument;
-        this.instruction_pointer++;
+        this.setRegister("b", this.current_argument);
+        this.setRegister("pc", this.registers.pc + 1);
     }
 
     doReturn() {
