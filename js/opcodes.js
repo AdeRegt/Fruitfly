@@ -19,3 +19,13 @@ export const opcodes = {
     V2RB: 0xe,
     EXIT: 0xf,
 };
+
+/**
+ * Converts an opcode into a string representation.
+ *
+ * @param {number} opcode
+ * @returns
+ */
+export function opcodeToString(opcode) {
+    return Object.keys(opcodes).find((key) => opcodes[key] === opcode);
+}
