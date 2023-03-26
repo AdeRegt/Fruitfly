@@ -227,11 +227,7 @@ const emulator = new FruitflyEmulator(
     document.getElementById("canvasid"),
     document.getElementById("mystatus")
 );
-document
-    .getElementById("inputGroupFileAddon03")
-    .addEventListener("click", function () {
-        emulator.insertCartridge(editor.compiler.generateUint16DataArray());
-    });
+emulator.setDebugCommandsets(document.getElementById("btnradio1"),document.getElementById("btnradio2"));
 document
     .getElementById("inputGroupFile03")
     .addEventListener("change", function (evt) {

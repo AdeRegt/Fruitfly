@@ -47,6 +47,17 @@ export class FruitflyEmulator {
         this.timer = null;
     }
 
+    setDebugCommandsets(run,step){
+        this.is_run_button = run;
+        this.step_button = step;
+        var innerme = this;
+        this.step_button.addEventListener("click",function(){
+            innerme.is_run_button.checked = true;
+            innerme.tick();
+            innerme.is_run_button.checked = false;
+        });
+    }
+
     setRegister(register, value) {
         this.registers[register] = value;
         this.notifyListeners({
@@ -115,11 +126,12 @@ export class FruitflyEmulator {
     }
 
     tick() {
+
+        if(!this.is_run_button.checked){
+            return;
+        }
+
         this.ticksSinceBoot++;
-        this.notifyListeners({
-            event: "tick",
-            data: { count: this.ticksSinceBoot },
-        });
 
         if (!this.isRunning) {
             return;
@@ -144,6 +156,10 @@ export class FruitflyEmulator {
         }
 
         this.operations[this.current_opcode].call(this);
+        this.notifyListeners({
+            event: "tick",
+            data: { count: this.ticksSinceBoot },
+        });
     }
 
     doExit() {
@@ -320,6 +336,10 @@ export class FruitflyEmulator {
         this.rawcanvas.innerHTML =
             "Application is running since " + new Date().toISOString() + "\n";
         this.isRunning = true;
+        this.notifyListeners({
+            event: "regset",
+            data: { register: "pc" },
+        });
         this.timer = window.setInterval(this.tick.bind(this), 1);
     }
 
