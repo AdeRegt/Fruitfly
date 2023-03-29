@@ -42,7 +42,7 @@ class FruitflyCompilerEditor {
         this.textarea.dispatchEvent(new Event("keyup"));
     }
 
-    offer(sourceCode){
+    offer(sourceCode) {
         this.compiler.setSource(sourceCode);
 
         const res = this.compiler.compile();
@@ -90,6 +90,15 @@ class UIController {
      * @type {HTMLElement[]}
      */
     memoryRows = Array(16).fill(null);
+
+    /**
+     * @type {{up: HTMLButtonElement, down: HTMLButtonElement, jumpToPc: HTMLButtonElement}}
+     */
+    memoryButtons = {
+        up: null,
+        down: null,
+        jumpToPc: null,
+    };
 
     /**
      * Object with the span elements correspondent to each register.
@@ -144,6 +153,21 @@ class UIController {
 
     initMemoryDisplay() {
         const tableBody = document.querySelector("#memory-table tbody");
+        this.memoryButtons = {
+            up: document.getElementById("memory-page-up"),
+            down: document.getElementById("memory-page-down"),
+            jumpToPc: document.getElementById("jump-to-pc"),
+        };
+
+        this.memoryButtons.up.addEventListener("click", () =>
+            this.handleMemoryPageChange(false)
+        );
+        this.memoryButtons.down.addEventListener("click", () =>
+            this.handleMemoryPageChange(true)
+        );
+        this.memoryButtons.jumpToPc.addEventListener("click", () =>
+            this.handleJumpToPC()
+        );
 
         this.memoryRows = this.memoryRows.map(() => {
             const row = document.createElement("tr");
@@ -165,6 +189,22 @@ class UIController {
      * @param {number} startPosition
      */
     displayMemory(startPosition) {
+        const memoryMax = this.emulator.memory.length - this.memoryRows.length;
+
+        if (startPosition >= memoryMax) {
+            startPosition = max;
+            this.memoryButtons.down.setAttribute("disabled", true);
+        } else {
+            this.memoryButtons.down.removeAttribute("disabled");
+        }
+
+        if (startPosition <= 0) {
+            startPosition = 0;
+            this.memoryButtons.up.setAttribute("disabled", true);
+        } else {
+            this.memoryButtons.up.removeAttribute("disabled");
+        }
+
         this.currentMemoryLocation = startPosition;
 
         this.memoryRows.forEach((row, index) => {
@@ -207,6 +247,24 @@ class UIController {
         this.registers.ticks.textContent = this.emulator.ticksSinceBoot;
         this.registers.lastError.textContent = this.emulator.lastError;
     }
+
+    handleMemoryPageChange(isDirectionDown) {
+        const numberOfPositionToScroll = this.memoryRows.length;
+
+        if (isDirectionDown) {
+            this.displayMemory(
+                this.currentMemoryLocation + numberOfPositionToScroll
+            );
+        } else {
+            this.displayMemory(
+                this.currentMemoryLocation - numberOfPositionToScroll
+            );
+        }
+    }
+
+    handleJumpToPC() {
+        this.displayMemory(this.emulator.registers.pc);
+    }
 }
 
 // set default program
@@ -227,7 +285,10 @@ const emulator = new FruitflyEmulator(
     document.getElementById("canvasid"),
     document.getElementById("mystatus")
 );
-emulator.setDebugCommandsets(document.getElementById("btnradio1"),document.getElementById("btnradio2"));
+emulator.setDebugCommandsets(
+    document.getElementById("btnradio1"),
+    document.getElementById("btnradio2")
+);
 document
     .getElementById("inputGroupFile03")
     .addEventListener("change", function (evt) {
@@ -244,10 +305,10 @@ editor.fire();
 
 const mbcompiler = new MikeBASICCompiler(
     document.getElementById("mbeditor"),
-    document.getElementById("errorContainer"),
+    document.getElementById("errorContainer")
 );
 mbcompiler.attach();
-mbcompiler.setOnCompiledListener(function(data){
+mbcompiler.setOnCompiledListener(function (data) {
     editor.offer(data);
 });
 
