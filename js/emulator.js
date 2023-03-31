@@ -199,7 +199,7 @@ export class FruitflyEmulator {
             }
             this.rawcanvas.append(str);
         } else {
-            this.lastError = "This systemcall is not supported yet";
+            this.lastError = "This systemcall is not supported yet ("+syscallid+") ";
             this.stop();
             return;
         }
@@ -307,7 +307,7 @@ export class FruitflyEmulator {
         // check size of the cardridge
         if (dataset.length != 4103) {
             window.alert(
-                "Invalid cardridge. Expected size 4103 but found " +
+                "Invalid cardridge. Expected a size of 4103 but found " +
                     dataset.length
             );
             return;

@@ -245,7 +245,7 @@ class UIController {
             ? "Running"
             : "Stopped";
         this.registers.ticks.textContent = this.emulator.ticksSinceBoot;
-        this.registers.lastError.textContent = this.emulator.lastError;
+        this.registers.lastError.value = this.emulator.lastError;
     }
 
     handleMemoryPageChange(isDirectionDown) {
