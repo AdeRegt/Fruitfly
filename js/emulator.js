@@ -45,6 +45,14 @@ export class FruitflyEmulator {
         this.onexit = null;
         this.ticksSinceBoot = 0;
         this.timer = null;
+        this.lastKeyCode = null;
+    }
+
+    attach(){
+        var innerme = this;
+        document.body.addEventListener("keydown",function(evt){
+            innerme.lastKeyCode = evt.keyCode;
+        });
     }
 
     setDebugCommandsets(run,step){

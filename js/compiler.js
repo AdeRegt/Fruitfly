@@ -213,6 +213,10 @@ export class FruitflyCompiler {
         return value;
     }
 
+    getWatchInformation(){
+        return this.calltable;
+    }
+
     generateAST() {
         for (var i = 0; i < this.tokens.length; i++) {
             var current_token = this.tokens[i];

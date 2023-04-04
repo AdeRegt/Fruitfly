@@ -123,9 +123,11 @@ class UIController {
     /**
      *
      * @param {FruitflyEmulator} emulator
+     * @param {FruitflyCompiler} compiler
      */
-    constructor(emulator) {
+    constructor(emulator,compiler) {
         this.emulator = emulator;
+        this.compiler = compiler;
 
         this.currentMemoryLocation = this.emulator.registers.pc;
     }
@@ -246,6 +248,27 @@ class UIController {
             : "Stopped";
         this.registers.ticks.textContent = this.emulator.ticksSinceBoot;
         this.registers.lastError.value = this.emulator.lastError;
+        
+        var watchinfos = this.compiler.getWatchInformation();
+        var watchhead = document.querySelector("#watch-table tbody");
+        watchhead.innerHTML = "";
+        for (const watch in watchinfos) {
+            if (Object.hasOwnProperty.call(watchinfos, watch)) {
+                const element = watchinfos[watch];
+                const memval = this.emulator.memory[element];
+                const memname = watch;
+
+                var rowmaster = document.createElement("tr");
+                rowmaster.classList.add("memory-cell");
+                var cellA = document.createElement("td");
+                var cellB = document.createElement("td");
+                cellA.innerHTML = memname;
+                cellB.innerHTML = toHexString(memval);
+                rowmaster.appendChild(cellA);
+                rowmaster.appendChild(cellB);
+                watchhead.appendChild(rowmaster);
+            }
+        }
     }
 
     handleMemoryPageChange(isDirectionDown) {
@@ -289,6 +312,7 @@ emulator.setDebugCommandsets(
     document.getElementById("btnradio1"),
     document.getElementById("btnradio2")
 );
+emulator.attach();
 document
     .getElementById("inputGroupFile03")
     .addEventListener("change", function (evt) {
@@ -312,5 +336,5 @@ mbcompiler.setOnCompiledListener(function (data) {
     editor.offer(data);
 });
 
-const uiController = new UIController(emulator);
+const uiController = new UIController(emulator,editor.compiler);
 uiController.init();

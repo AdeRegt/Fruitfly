@@ -124,52 +124,75 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Registers</div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-3">
-                                <strong>A:</strong>
-                                <span class="register-value hex-value" id="register_a_show">0x0000</span>
-                            </div>
-                            <div class="col-xs-6 col-sm-3">
-                                <strong>B:</strong>
-                                <span class="register-value hex-value" id="register_b_show">0x0000</span>
-                            </div>
-                            <div class="col-xs-6 col-sm-3">
-                                <strong>IP:</strong>
-                                <span class="register-value hex-value" id="register_ip_show">0x0000</span>
-                            </div>
-                            <div class="col-xs-6 col-sm-3">
-                                <strong>Stack:</strong>
-                                <span class="register-value hex-value" id="register_stack_show">0x0000</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <hr />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-3">
-                                <strong>Opcode:</strong>
-                                <span class="register-value hex-value" id="register_opcode_show">0x0000</span>
-                            </div>
-                            <div class="col-xs-6 col-sm-3">
-                                <strong>Argument:</strong>
-                                <span class="register-value hex-value" id="register_argument_show">-</span>
-                            </div>
-                            <div class="col-xs-6 col-sm-3">
-                                <strong>Running:</strong>
-                                <span class="register-value hex-value" id="register_ir_show">0</span>
-                            </div>
-                            <div class="col-xs-6 col-sm-3">
-                                <strong>Ticks:</strong>
-                                <span class="register-value hex-value" id="register_tc_show">0</span>
+                <div class="row">
+                    <div class="col-md-12 pb-3">
+                        <div class="card">
+                            <div class="card-header">Registers</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-xs-6 col-sm-3">
+                                        <strong>A:</strong>
+                                        <span class="register-value hex-value" id="register_a_show">0x0000</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-3">
+                                        <strong>B:</strong>
+                                        <span class="register-value hex-value" id="register_b_show">0x0000</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-3">
+                                        <strong>IP:</strong>
+                                        <span class="register-value hex-value" id="register_ip_show">0x0000</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-3">
+                                        <strong>Stack:</strong>
+                                        <span class="register-value hex-value" id="register_stack_show">0x0000</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6 col-sm-3">
+                                        <strong>Opcode:</strong>
+                                        <span class="register-value hex-value" id="register_opcode_show">0x0000</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-3">
+                                        <strong>Argument:</strong>
+                                        <span class="register-value hex-value" id="register_argument_show">-</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-3">
+                                        <strong>Running:</strong>
+                                        <span class="register-value hex-value" id="register_ir_show">0</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-3">
+                                        <strong>Ticks:</strong>
+                                        <span class="register-value hex-value" id="register_tc_show">0</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-12 pb-3">
+                        <div class="card">
+                            <div class="card-header">Watches</div>
+                            <div class="card-body">
+                                <table class="table table-hover" id="watch-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>
