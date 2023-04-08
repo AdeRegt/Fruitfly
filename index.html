@@ -26,7 +26,7 @@
             <div class="col-lg-7">
                 <h1>Fruitfly</h1>
                 <i>Created by <a href="https://github.com/AdeRegt">Alexandros de Regt</a> and <a
-                        href="https://github.com/gil0mendes">@gil0mendes</a> 2023; See <a
+                        href="https://github.com/gil0mendes">@gil0mendes</a> 2023 - 2023; See <a
                         href="https://github.com/AdeRegt/Fruitfly">GitHub</a> for
                     the source code.</i><br />
             </div>
@@ -365,7 +365,7 @@
                                 <th scope="row">DUMP [SOMETHING]</th>
                                 <td>Raw output</td>
                                 <td>raw output something</td>
-                                <td><code>DUMP "Hello world"</code></td>
+                                <td><code>DUMP "Hello world"</code><br/><code>DUMP 1</code><br/><code>DUMP main</code></td>
                                 <td>1</td>
                             </tr>
                             <tr>
@@ -380,6 +380,34 @@
                                 <td>Value to register B</td>
                                 <td>Set register B to value</td>
                                 <td><code>V2RA value</code></td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">PUSHRA</th>
+                                <td>Push register A</td>
+                                <td>Pushes the contents of register A to the stack</td>
+                                <td><code>PUSHRA</code></td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">PUSHRB</th>
+                                <td>Push register B</td>
+                                <td>Pushes the contents of register B to the stack</td>
+                                <td><code>PUSHRB</code></td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">POPRA</th>
+                                <td>Pop to register A</td>
+                                <td>Pops content from stack to register A</td>
+                                <td><code>POPRA</code></td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">POPRB</th>
+                                <td>Pop to register B</td>
+                                <td>Pops content from stack to register B</td>
+                                <td><code>POPRB</code></td>
                                 <td>1</td>
                             </tr>
                         </tbody>

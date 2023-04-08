@@ -57,6 +57,11 @@ const SXE_OPWORD_DUMP = "DUMP";
 const SXE_OPWORD_V2RA = "V2RA";
 const SXE_OPWORD_V2RB = "V2RB";
 
+const SXE_OPWORD_PUSHRA = "PUSHRA";
+const SXE_OPWORD_PUSHRB = "PUSHRB";
+const SXE_OPWORD_POPRA = "POPRA";
+const SXE_OPWORD_POPRB = "POPRB";
+
 const VALID_OPCODES = [
     SXE_OPWORD_EXIT,
     SXE_OPWORD_DEBUG,
@@ -78,7 +83,11 @@ const VALID_OPCODES = [
     SXE_OPWORD_MUL,
     SXE_OPWORD_DUMP,
     SXE_OPWORD_V2RA,
-    SXE_OPWORD_V2RB
+    SXE_OPWORD_V2RB,
+    SXE_OPWORD_PUSHRA,
+    SXE_OPWORD_PUSHRB,
+    SXE_OPWORD_POPRA,
+    SXE_OPWORD_POPRB,
 ];
 
 class FruitflyCompilerToken {
@@ -636,6 +645,31 @@ export class FruitflyCompiler {
                         bytecode: this.format(opcodes.V2RB, vc),
                         label: null,
                     });
+                } else if (current_token.value == SXE_OPWORD_PUSHRA) {
+                    this.ast.push({
+                        bytecode: this.format(opcodes.FLAGS, 18),
+                        label: null,
+                    });
+                } else if (current_token.value == SXE_OPWORD_PUSHRB) {
+                    this.ast.push({
+                        bytecode: this.format(opcodes.FLAGS, 19),
+                        label: null,
+                    });
+                } else if (current_token.value == SXE_OPWORD_POPRA) {
+                    this.ast.push({
+                        bytecode: this.format(opcodes.FLAGS, 20),
+                        label: null,
+                    });
+                } else if (current_token.value == SXE_OPWORD_POPRB) {
+                    this.ast.push({
+                        bytecode: this.format(opcodes.FLAGS, 21),
+                        label: null,
+                    });
+                } else {
+                    this.errorslist.push(
+                        "Unknown token: " + current_token.value
+                    );
+                    return;
                 }
             }
         }

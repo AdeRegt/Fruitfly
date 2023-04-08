@@ -38,6 +38,7 @@ export class FruitflyEmulator {
         this.rawstatus = status;
         this.memory = new Uint16Array(4103);
         this.callstack = [];
+        this.stack = [];
         this.current_opcode = 0;
         this.current_argument = 0;
         this.isRunning = false;
@@ -274,6 +275,14 @@ export class FruitflyEmulator {
             this.doDebug();
         } else if (this.current_argument == 17) {
             return this.doReturn();
+        } else if (this.current_argument == 18) {
+            this.stack.push(this.registers.a);
+        } else if (this.current_argument == 19) {
+            this.stack.push(this.registers.b);
+        } else if (this.current_argument == 20) {
+            this.registers.a = this.stack.pop();
+        } else if (this.current_argument == 21) {
+            this.registers.b = this.stack.pop();
         }
 
         this.setRegister("pc", this.registers.pc + 1);
@@ -339,6 +348,7 @@ export class FruitflyEmulator {
             pc: 0,
         };
         this.callstack = [];
+        this.stack = [];
         this.lastError = null;
         this.ticksSinceBoot = 0;
         this.rawcanvas.innerHTML =
