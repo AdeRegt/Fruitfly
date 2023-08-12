@@ -9,12 +9,7 @@
     <script src="/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
         crossorigin="anonymous"></script>
-    <style>
-        .w100 {
-            width: 80px !important;
-        }
-
-    </style>
+    <link href="/css/core.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 
 <body>
@@ -32,7 +27,7 @@
             </div>
         </div>
 
-        <div class="row" style="height: 100%;">
+        <div class="row whp">
             <div class="col-md-6">
                 <h2>Editor</h2>
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -46,23 +41,22 @@
                             aria-selected="false">MikeBASIC</button>
                     </li>
                 </ul>
-                <div class="tab-content" id="myTabContent" style="width: 100%">
-                    <div class="tab-pane fade show active" id="ff-tab-pane" role="tabpanel" aria-labelledby="ff-tab"
-                        tabindex="0" style="width: 100%">
-                        <textarea id="thing" style="width: 100%" rows="14"></textarea>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active whp" id="ff-tab-pane" role="tabpanel" aria-labelledby="ff-tab"
+                        tabindex="0">
+                        <div id="thing" class="whp" ></div>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#opcodeModal">Show
                             opcode list</button>
                     </div>
-                    <div class="tab-pane fade" id="mb-tab-pane" role="tabpanel" aria-labelledby="mb-tab" tabindex="0"
-                        style="width: 100%">
-                        <textarea id="mbeditor" style="width: 100%" rows="14"></textarea>
+                    <div class="tab-pane fade whp" id="mb-tab-pane" role="tabpanel" aria-labelledby="mb-tab" tabindex="0" >
+                        <textarea id="mbeditor" class="whp" rows="14"></textarea>
                         <a href="https://mikeos.sourceforge.net/handbook-appdev-basic.html" target="_blank"
                             type="button" class="btn btn-primary">See documentation</a>
                     </div>
                 </div>
                 <br />
-                <label id="errorContainer" style="color:red"></label><br/>
+                <label id="errorContainer" class="red"></label><br/>
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <a id="downloadlink" type="button" class="btn btn-info disabled">Download assembled file</a>
                 </div>
@@ -91,7 +85,7 @@
                 </div>
             </div>
         </div>
-        <div class="row" style="height: 100%;">
+        <div class="row whp">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">

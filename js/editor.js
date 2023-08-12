@@ -2,6 +2,9 @@ import { FruitflyEmulator } from "./emulator.js";
 import { FruitflyCompiler } from "./compiler.js";
 import { toHexString } from "./utils.js";
 import { MikeBASICCompiler } from "./mikebasic.js";
+import { basicSetup, EditorView } from "./cm/codemirror.js";
+import { autocompletion } from "./cm/@codemirror-autocomplete.js";
+import { ViewPlugin } from "./cm/@codemirror-view.js";
 
 const DEFAULT_PROGRAM = `
   call main
@@ -15,38 +18,24 @@ print_structure:
   dump "hello world"
 `;
 
-class FruitflyCompilerEditor {
-    compiler = new FruitflyCompiler();
-
-    onCompiled = () => null;
-
-    constructor(textarea, errorContainerEl, downloadLink) {
-        this.textarea = textarea;
+class FruitflyAbstractCompilerEditor {
+    
+    constructor(errorContainerEl, downloadLink){
+        this.compiler = new FruitflyCompiler();
+        this.onCompiled = null;
         this.errorContainerEl = errorContainerEl;
         this.downloadLink = downloadLink;
     }
 
-    getEditorsContent() {
-        return this.textarea.value.trim();
-    }
-
-    setMessage(message) {
-        this.errorContainerEl.innerHTML = message;
-    }
-
-    setOnCompiledListener(fun) {
-        this.onCompiled = fun;
-    }
-
-    fire() {
-        this.textarea.dispatchEvent(new Event("keyup"));
+    getCompiler(){
+        return this.compiler;
     }
 
     offer(sourceCode) {
-        this.compiler.setSource(sourceCode);
+        this.getCompiler().setSource(sourceCode);
 
-        const res = this.compiler.compile();
-        this.setMessage(this.compiler.getErrors().join("<br/>"));
+        const res = this.getCompiler().compile();
+        this.setMessage(this.getCompiler().getErrors().join("<br/>"));
 
         // when the program is invalid we block the download button
         if (res === false) {
@@ -57,14 +46,107 @@ class FruitflyCompilerEditor {
         this.downloadLink.href = res;
         this.downloadLink.download = "test.sxe";
         this.downloadLink.classList.remove("disabled");
-        this.onCompiled(this.compiler.generateUint16DataArray());
+        this.onCompiled(this.getCompiler().generateUint16DataArray());
+    }
+
+    setOnCompiledListener(fun) {
+        this.onCompiled = fun;
+    }
+
+    setMessage(message) {
+        this.errorContainerEl.innerHTML = message;
+    }
+
+    getEditorsContent() {
+        return "";
+    }
+
+    fireEvent(){
+        const sourceCode = this.getEditorsContent();
+        this.offer(sourceCode);
+    }
+
+
+}
+
+class FruitflyCompilerEditor extends FruitflyAbstractCompilerEditor{
+
+    constructor(textarea,errorContainerEl, downloadLink) {
+        super(errorContainerEl, downloadLink);
+        this.textarea = textarea;
+    }
+
+    getEditorsContent() {
+        return this.textarea.value.trim();
+    }
+
+    fire() {
+        this.textarea.dispatchEvent(new Event("keyup"));
     }
 
     attach() {
-        this.textarea.addEventListener("keyup", () => {
-            const sourceCode = this.getEditorsContent();
-            this.offer(sourceCode);
+        this.textarea.addEventListener("keyup", this.fireEvent.bind(this));
+    }
+}
+
+class FruitflyCodeMirrorCompilerEditor extends FruitflyAbstractCompilerEditor{
+
+    constructor(texthost,errorContainerEl, downloadLink) {
+        super(errorContainerEl, downloadLink);
+        var innerthis = this;
+        this.textmirror = new EditorView({
+            doc: DEFAULT_PROGRAM,
+            extensions: [
+              basicSetup,
+              ViewPlugin.fromClass(class {
+                  constructor(view) {}
+          
+                  update(update) {
+                    if (update.docChanged)
+                        innerthis.fire();
+                  }
+                }),
+              autocompletion({override: [this.myCompletions.bind(this)]})
+            ],
+            parent: texthost
         });
+    }
+    
+    myCompletions(context) {
+        let before = context.matchBefore(/\w+/);
+        var opcodelist = this.getCompiler().getOpcodes();
+        var completions = [
+            {label: "park", type: "constant", info: "Test completion"},
+        ];
+        for(var i = 0 ; i < opcodelist.length ; i++){
+            completions.push({label: opcodelist[i], type: "keyword"});
+        }
+        var variablelist = Object.keys(this.getCompiler().getWatchInformation());
+        for(var i = 0 ; i < variablelist.length ; i++){
+            completions.push({label: variablelist[i], type: "variable"});
+        }
+        // If completion wasn't explicitly started and there
+        // is no word before the cursor, don't open completions.
+        if (!context.explicit && !before) {
+            return null;
+        }
+        return {
+            from: before ? before.from : context.pos,
+            options: completions,
+            validFor: /^\w*$/
+        };
+    }
+
+    getEditorsContent() {
+        return this.textmirror.state.doc.toString();
+    }
+
+    fire() {
+        this.fireEvent();
+    }
+
+    attach() {
+        EditorView.updateListener.of(this.fireEvent.bind(this));
     }
 }
 
@@ -291,9 +373,8 @@ class UIController {
 }
 
 // set default program
-document.getElementById("thing").value = DEFAULT_PROGRAM;
 
-const editor = new FruitflyCompilerEditor(
+const editor = new FruitflyCodeMirrorCompilerEditor(
     document.getElementById("thing"),
     document.getElementById("errorContainer"),
     document.getElementById("downloadlink")

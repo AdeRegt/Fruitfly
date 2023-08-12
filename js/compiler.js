@@ -734,4 +734,8 @@ export class FruitflyCompiler {
     getErrors() {
         return this.errorslist;
     }
+
+    getOpcodes(){
+        return VALID_OPCODES;
+    }
 }
