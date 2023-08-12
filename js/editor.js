@@ -4,7 +4,8 @@ import { toHexString } from "./utils.js";
 import { MikeBASICCompiler } from "./mikebasic.js";
 import { basicSetup, EditorView } from "./cm/codemirror.js";
 import { autocompletion } from "./cm/@codemirror-autocomplete.js";
-import { ViewPlugin } from "./cm/@codemirror-view.js";
+import { ViewPlugin, keymap } from "./cm/@codemirror-view.js";
+import { indentWithTab } from "./cm/@codemirror-commands.js";
 
 const DEFAULT_PROGRAM = `
   call main
@@ -98,6 +99,7 @@ class FruitflyCodeMirrorCompilerEditor extends FruitflyAbstractCompilerEditor{
             doc: DEFAULT_PROGRAM,
             extensions: [
               basicSetup,
+              keymap.of([indentWithTab]),
               ViewPlugin.fromClass(class {
                   constructor(view) {}
           
