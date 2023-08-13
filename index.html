@@ -45,9 +45,14 @@
                     <div class="tab-pane fade show active whp" id="ff-tab-pane" role="tabpanel" aria-labelledby="ff-tab"
                         tabindex="0">
                         <div id="thing" class="whp" ></div>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#opcodeModal">Show
-                            opcode list</button>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#opcodeModal">Show
+                                opcode list</button>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#samplesModal">Show
+                                samples list</button>
+                        </div>
                     </div>
                     <div class="tab-pane fade whp" id="mb-tab-pane" role="tabpanel" aria-labelledby="mb-tab" tabindex="0" >
                         <textarea id="mbeditor" class="whp" rows="14"></textarea>
@@ -429,6 +434,23 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="samplesModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" style="min-width: calc(80%);">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Samples list</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group" id="examplelist">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

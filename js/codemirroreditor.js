@@ -27,6 +27,11 @@ export class FruitflyCodeMirrorCompilerEditor extends FruitflyAbstractCompilerEd
             parent: texthost
         });
     }
+
+    setEditorsContent(cont){
+        var u = this.textmirror.state.update({changes: {from: 0, to: this.textmirror.state.doc.length, insert: cont}});
+        this.textmirror.update([u]);
+    }
     
     myCompletions(context) {
         let before = context.matchBefore(/\w+/);

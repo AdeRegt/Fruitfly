@@ -62,6 +62,10 @@ export class FruitflyAbstractCompilerEditor {
         this.offer(sourceCode);
     }
 
+    setEditorsContent(cont){
+
+    }
+
 
 }
 
@@ -82,6 +86,10 @@ export class FruitflyCompilerEditor extends FruitflyAbstractCompilerEditor{
 
     attach() {
         this.textarea.addEventListener("keyup", this.fireEvent.bind(this));
+    }
+
+    setEditorsContent(cont){
+        this.textarea.innerHTML = cont;
     }
 }
 
