@@ -1,13 +1,8 @@
 import { FruitflyEmulator } from "./emulator.js";
 import { FruitflyCompiler } from "./compiler.js";
 import { toHexString } from "./utils.js";
-import { MikeBASICCompiler } from "./mikebasic.js";
-import { basicSetup, EditorView } from "./cm/codemirror.js";
-import { autocompletion } from "./cm/@codemirror-autocomplete.js";
-import { ViewPlugin, keymap } from "./cm/@codemirror-view.js";
-import { indentWithTab } from "./cm/@codemirror-commands.js";
 
-const DEFAULT_PROGRAM = `
+export const DEFAULT_PROGRAM = `
   call main
   exit 1
 main:
@@ -19,7 +14,7 @@ print_structure:
   dump "hello world"
 `;
 
-class FruitflyAbstractCompilerEditor {
+export class FruitflyAbstractCompilerEditor {
     
     constructor(errorContainerEl, downloadLink){
         this.compiler = new FruitflyCompiler();
@@ -70,7 +65,7 @@ class FruitflyAbstractCompilerEditor {
 
 }
 
-class FruitflyCompilerEditor extends FruitflyAbstractCompilerEditor{
+export class FruitflyCompilerEditor extends FruitflyAbstractCompilerEditor{
 
     constructor(textarea,errorContainerEl, downloadLink) {
         super(errorContainerEl, downloadLink);
@@ -90,68 +85,6 @@ class FruitflyCompilerEditor extends FruitflyAbstractCompilerEditor{
     }
 }
 
-class FruitflyCodeMirrorCompilerEditor extends FruitflyAbstractCompilerEditor{
-
-    constructor(texthost,errorContainerEl, downloadLink) {
-        super(errorContainerEl, downloadLink);
-        var innerthis = this;
-        this.textmirror = new EditorView({
-            doc: DEFAULT_PROGRAM,
-            extensions: [
-              basicSetup,
-              keymap.of([indentWithTab]),
-              ViewPlugin.fromClass(class {
-                  constructor(view) {}
-          
-                  update(update) {
-                    if (update.docChanged)
-                        innerthis.fire();
-                  }
-                }),
-              autocompletion({override: [this.myCompletions.bind(this)]})
-            ],
-            parent: texthost
-        });
-    }
-    
-    myCompletions(context) {
-        let before = context.matchBefore(/\w+/);
-        var opcodelist = this.getCompiler().getOpcodes();
-        var completions = [
-            {label: "park", type: "constant", info: "Test completion"},
-        ];
-        for(var i = 0 ; i < opcodelist.length ; i++){
-            completions.push({label: opcodelist[i], type: "keyword"});
-        }
-        var variablelist = Object.keys(this.getCompiler().getWatchInformation());
-        for(var i = 0 ; i < variablelist.length ; i++){
-            completions.push({label: variablelist[i], type: "variable"});
-        }
-        // If completion wasn't explicitly started and there
-        // is no word before the cursor, don't open completions.
-        if (!context.explicit && !before) {
-            return null;
-        }
-        return {
-            from: before ? before.from : context.pos,
-            options: completions,
-            validFor: /^\w*$/
-        };
-    }
-
-    getEditorsContent() {
-        return this.textmirror.state.doc.toString();
-    }
-
-    fire() {
-        this.fireEvent();
-    }
-
-    attach() {
-        EditorView.updateListener.of(this.fireEvent.bind(this));
-    }
-}
-
 /**
  * Create a new table cell.
  *
@@ -167,7 +100,7 @@ const createCell = (classes) => {
     return newCell;
 };
 
-class UIController {
+export class UIController {
     /**
      * Array of the <tr> DOM elements used to display memory.
      *
@@ -374,50 +307,3 @@ class UIController {
     }
 }
 
-// set default program
-
-const editor = new FruitflyCodeMirrorCompilerEditor(
-    document.getElementById("thing"),
-    document.getElementById("errorContainer"),
-    document.getElementById("downloadlink")
-);
-
-editor.attach();
-editor.setOnCompiledListener(function (data) {
-    emulator.insertCartridge(data);
-});
-
-const emulator = new FruitflyEmulator(
-    document.getElementById("canvasid"),
-    document.getElementById("mystatus")
-);
-emulator.setDebugCommandsets(
-    document.getElementById("btnradio1"),
-    document.getElementById("btnradio2")
-);
-emulator.attach();
-document
-    .getElementById("inputGroupFile03")
-    .addEventListener("change", function (evt) {
-        var file = evt.target.files[0];
-        let reader = new FileReader();
-        reader.addEventListener("loadend", function (e) {
-            var data = new Uint16Array(e.target.result);
-            emulator.insertCartridge(data);
-        });
-        reader.readAsArrayBuffer(file);
-    });
-
-editor.fire();
-
-const mbcompiler = new MikeBASICCompiler(
-    document.getElementById("mbeditor"),
-    document.getElementById("errorContainer")
-);
-mbcompiler.attach();
-mbcompiler.setOnCompiledListener(function (data) {
-    editor.offer(data);
-});
-
-const uiController = new UIController(emulator,editor.compiler);
-uiController.init();
