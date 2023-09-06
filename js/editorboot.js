@@ -7,7 +7,8 @@ import { UIController } from "./editor.js";
 const editor = new FruitflyCodeMirrorCompilerEditor(
     document.getElementById("thing"),
     document.getElementById("errorContainer"),
-    document.getElementById("downloadlink")
+    document.getElementById("downloadlink"),
+    document.getElementById("compilertarget")
 );
 
 editor.attach();
@@ -17,7 +18,7 @@ editor.setOnCompiledListener(function (data) {
 
 const emulator = new FruitflyEmulator(
     document.getElementById("canvasid"),
-    document.getElementById("mystatus")
+    document.getElementById("register_le_show")
 );
 emulator.setDebugCommandsets(
     document.getElementById("btnradio1"),

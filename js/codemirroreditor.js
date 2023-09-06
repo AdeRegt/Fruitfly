@@ -6,8 +6,8 @@ import { FruitflyAbstractCompilerEditor, DEFAULT_PROGRAM } from "./editor.js";
 
 export class FruitflyCodeMirrorCompilerEditor extends FruitflyAbstractCompilerEditor{
 
-    constructor(texthost,errorContainerEl, downloadLink) {
-        super(errorContainerEl, downloadLink);
+    constructor(texthost,errorContainerEl, downloadLink, version) {
+        super(errorContainerEl, downloadLink, version);
         var innerthis = this;
         this.textmirror = new EditorView({
             doc: DEFAULT_PROGRAM,
@@ -67,6 +67,7 @@ export class FruitflyCodeMirrorCompilerEditor extends FruitflyAbstractCompilerEd
     }
 
     attach() {
+        super.attach();
         EditorView.updateListener.of(this.fireEvent.bind(this));
     }
 }

@@ -129,6 +129,14 @@ class FruitflyCompilerToken {
 export class FruitflyCompiler {
     constructor() {}
 
+    setVersion(ver){
+        this.version = ver;
+    }
+
+    getVersion(){
+        return this.version;
+    }
+
     setSource(source) {
         var tmpsource = [];
         var tmporiginal = source.split("\n");
@@ -333,10 +341,21 @@ export class FruitflyCompiler {
                     if (vc == 0xfff) {
                         tv = temp_token.value;
                     }
-                    this.ast.push({
-                        bytecode: this.format(opcodes.A2RA, vc),
-                        label: tv,
-                    });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.A2RA, vc),
+                            label: tv,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.A2RX, 0),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: vc,
+                            label: tv,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_A2RB) {
                     i++;
                     var temp_token = this.tokens[i];
@@ -358,10 +377,21 @@ export class FruitflyCompiler {
                     if (vc == 0xfff) {
                         tv = temp_token.value;
                     }
-                    this.ast.push({
-                        bytecode: this.format(opcodes.A2RB, vc),
-                        label: tv,
-                    });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.A2RB, vc),
+                            label: tv,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.A2RX, 1),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: vc,
+                            label: tv,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_RA2A) {
                     i++;
                     var temp_token = this.tokens[i];
@@ -383,10 +413,21 @@ export class FruitflyCompiler {
                     if (vc == 0xfff) {
                         tv = temp_token.value;
                     }
-                    this.ast.push({
-                        bytecode: this.format(opcodes.RA2A, vc),
-                        label: tv,
-                    });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.RA2A, vc),
+                            label: tv,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.RA2X, 0),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: vc,
+                            label: tv,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_RB2A) {
                     i++;
                     var temp_token = this.tokens[i];
@@ -408,10 +449,21 @@ export class FruitflyCompiler {
                     if (vc == 0xfff) {
                         tv = temp_token.value;
                     }
-                    this.ast.push({
-                        bytecode: this.format(opcodes.RB2A, vc),
-                        label: tv,
-                    });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.RB2A, vc),
+                            label: tv,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.RA2X, 1),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: vc,
+                            label: tv,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_JUMP) {
                     i++;
                     var temp_token = this.tokens[i];
@@ -438,25 +490,69 @@ export class FruitflyCompiler {
                         label: tv,
                     });
                 } else if (current_token.value == SXE_OPWORD_ADD) {
-                    this.ast.push({
-                        bytecode: this.format(opcodes.FLAGS, 1),
-                        label: null,
-                    });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.FLAGS, 1),
+                            label: null,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.FLAGS, 1),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: 0x01,
+                            label: null,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_SUB) {
-                    this.ast.push({
-                        bytecode: this.format(opcodes.FLAGS, 2),
-                        label: null,
-                    });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.FLAGS, 2),
+                            label: null,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.FLAGS, 2),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: 0x01,
+                            label: null,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_DIV) {
-                    this.ast.push({
-                        bytecode: this.format(opcodes.FLAGS, 3),
-                        label: null,
-                    });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.FLAGS, 3),
+                            label: null,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.FLAGS, 3),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: 0x01,
+                            label: null,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_MUL) {
-                    this.ast.push({
-                        bytecode: this.format(opcodes.FLAGS, 4),
-                        label: null,
-                    });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.FLAGS, 4),
+                            label: null,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.FLAGS, 4),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: 0x01,
+                            label: null,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_JE) {
                     i++;
                     var temp_token = this.tokens[i];
@@ -482,6 +578,21 @@ export class FruitflyCompiler {
                         bytecode: this.format(opcodes.JE, vc),
                         label: tv,
                     });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.JE, vc),
+                            label: tv,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.JEX, 0x01),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: vc,
+                            label: tv,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_JM) {
                     i++;
                     var temp_token = this.tokens[i];
@@ -507,6 +618,21 @@ export class FruitflyCompiler {
                         bytecode: this.format(opcodes.JM, vc),
                         label: tv,
                     });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.JM, vc),
+                            label: tv,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.JMX, 0x01),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: vc,
+                            label: tv,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_JL) {
                     i++;
                     var temp_token = this.tokens[i];
@@ -532,6 +658,21 @@ export class FruitflyCompiler {
                         bytecode: this.format(opcodes.JL, vc),
                         label: tv,
                     });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.JL, vc),
+                            label: tv,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.JLX, 0x01),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: vc,
+                            label: tv,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_JNE) {
                     i++;
                     var temp_token = this.tokens[i];
@@ -553,10 +694,21 @@ export class FruitflyCompiler {
                     if (vc == 0xfff) {
                         tv = temp_token.value;
                     }
-                    this.ast.push({
-                        bytecode: this.format(opcodes.JNE, vc),
-                        label: tv,
-                    });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.JNE, vc),
+                            label: tv,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.JNX, 0x01),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: vc,
+                            label: tv,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_DUMP) {
                     i++;
                     var temp_token = this.tokens[i];
@@ -620,10 +772,21 @@ export class FruitflyCompiler {
                         return;
                     }
                     var vc = temp_token.value;
-                    this.ast.push({
-                        bytecode: this.format(opcodes.V2RA, vc),
-                        label: null,
-                    });
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.V2RA, vc),
+                            label: null,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.V2RX, 0),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: vc,
+                            label: tv,
+                        });
+                    }
                 } else if (current_token.value == SXE_OPWORD_V2RB) {
                     i++;
                     var temp_token = this.tokens[i];
@@ -641,26 +804,37 @@ export class FruitflyCompiler {
                         return;
                     }
                     var vc = temp_token.value;
-                    this.ast.push({
-                        bytecode: this.format(opcodes.V2RB, vc),
-                        label: null,
-                    });
-                } else if (current_token.value == SXE_OPWORD_PUSHRA) {
+                    if(this.getVersion()==1){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.V2RB, vc),
+                            label: null,
+                        });
+                    }else if(this.getVersion()>=2){
+                        this.ast.push({
+                            bytecode: this.format(opcodes.V2RX, 1),
+                            label: null,
+                        });
+                        this.ast.push({
+                            bytecode: vc,
+                            label: tv,
+                        });
+                    }
+                } else if (this.getVersion()==1 && current_token.value == SXE_OPWORD_PUSHRA) {
                     this.ast.push({
                         bytecode: this.format(opcodes.FLAGS, 18),
                         label: null,
                     });
-                } else if (current_token.value == SXE_OPWORD_PUSHRB) {
+                } else if (this.getVersion()==1 && current_token.value == SXE_OPWORD_PUSHRB) {
                     this.ast.push({
                         bytecode: this.format(opcodes.FLAGS, 19),
                         label: null,
                     });
-                } else if (current_token.value == SXE_OPWORD_POPRA) {
+                } else if (this.getVersion()==1 && current_token.value == SXE_OPWORD_POPRA) {
                     this.ast.push({
                         bytecode: this.format(opcodes.FLAGS, 20),
                         label: null,
                     });
-                } else if (current_token.value == SXE_OPWORD_POPRB) {
+                } else if (this.getVersion()==1 && current_token.value == SXE_OPWORD_POPRB) {
                     this.ast.push({
                         bytecode: this.format(opcodes.FLAGS, 21),
                         label: null,
@@ -697,7 +871,7 @@ export class FruitflyCompiler {
         buffer[1] = 0xcd45;
         // VERSIONS
         buffer[2] = 0x0101;
-        buffer[3] = 0x0001;
+        buffer[3] = this.getVersion();
         // PROGRAMCODE
         for (var i = 0; i < this.ast.length; i++) {
             buffer[4 + i] = this.ast[i].bytecode;

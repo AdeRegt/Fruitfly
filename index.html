@@ -52,6 +52,11 @@
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#samplesModal" id="samplesModalSpawner">Show
                                 samples list</button>
+                            <a id="downloadlink" type="button" class="btn btn-info disabled">Download assembled file</a>
+                            <select class="custom-select" id="compilertarget">
+                                <option value="2">v2</option>
+                                <option value="1">v1</option>
+                            </select>
                         </div>
                     </div>
                     <div class="tab-pane fade whp" id="mb-tab-pane" role="tabpanel" aria-labelledby="mb-tab" tabindex="0" >
@@ -61,9 +66,10 @@
                     </div>
                 </div>
                 <br />
-                <label id="errorContainer" class="red"></label><br/>
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <a id="downloadlink" type="button" class="btn btn-info disabled">Download assembled file</a>
+
+                <div class="input-group my-3">
+                    <span class="input-group-text">Last error</span><input type="text" class="form-control w100"
+                        disabled id="errorContainer">
                 </div>
 
                 <br />
@@ -128,7 +134,7 @@
                         <div class="card">
                             <div class="card-header">Registers</div>
                             <div class="card-body">
-                                <div class="row">
+                                <div class="row reginfo regv1 regv2">
                                     <div class="col-xs-6 col-sm-3">
                                         <strong>A:</strong>
                                         <span class="register-value hex-value" id="register_a_show">0x0000</span>
@@ -141,9 +147,32 @@
                                         <strong>IP:</strong>
                                         <span class="register-value hex-value" id="register_ip_show">0x0000</span>
                                     </div>
-                                    <div class="col-xs-6 col-sm-3">
+                                    <div class="col-xs-6 col-sm-3 reginfo regv1">
                                         <strong>Stack:</strong>
                                         <span class="register-value hex-value" id="register_stack_show">0x0000</span>
+                                    </div>
+                                </div>
+                                <div class="row reginfo regv2">
+                                    <div class="col">
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div class="row reginfo regv2">
+                                    <div class="col-xs-6 col-sm-3">
+                                        <strong>C:</strong>
+                                        <span class="register-value hex-value" id="register_c_show">0x0000</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-3">
+                                        <strong>D:</strong>
+                                        <span class="register-value hex-value" id="register_d_show">0x0000</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-3">
+                                        <strong>E:</strong>
+                                        <span class="register-value hex-value" id="register_e_show">0x0000</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-3">
+                                        <strong>F:</strong>
+                                        <span class="register-value hex-value" id="register_f_show">0x0000</span>
                                     </div>
                                 </div>
                                 <div class="row">

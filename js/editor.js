@@ -16,11 +16,16 @@ print_structure:
 
 export class FruitflyAbstractCompilerEditor {
     
-    constructor(errorContainerEl, downloadLink){
+    constructor(errorContainerEl, downloadLink, version){
         this.compiler = new FruitflyCompiler();
         this.onCompiled = null;
         this.errorContainerEl = errorContainerEl;
         this.downloadLink = downloadLink;
+        this.version = version;
+    }
+
+    getVersion(){
+        return this.version.value;
     }
 
     getCompiler(){
@@ -50,7 +55,7 @@ export class FruitflyAbstractCompilerEditor {
     }
 
     setMessage(message) {
-        this.errorContainerEl.innerHTML = message;
+        this.errorContainerEl.value = message;
     }
 
     getEditorsContent() {
@@ -59,11 +64,16 @@ export class FruitflyAbstractCompilerEditor {
 
     fireEvent(){
         const sourceCode = this.getEditorsContent();
+        this.compiler.setVersion(this.getVersion());
         this.offer(sourceCode);
     }
 
     setEditorsContent(cont){
 
+    }
+
+    attach(){
+        this.version.addEventListener("change",this.fireEvent.bind(this));
     }
 
 
@@ -132,6 +142,10 @@ export class UIController {
         pc: document.getElementById("register_ip_show"),
         a: document.getElementById("register_a_show"),
         b: document.getElementById("register_b_show"),
+        c: document.getElementById("register_c_show"),
+        d: document.getElementById("register_d_show"),
+        e: document.getElementById("register_e_show"),
+        f: document.getElementById("register_f_show"),
         opcode: document.getElementById("register_opcode_show"),
         argument: document.getElementById("register_argument_show"),
         stack: document.getElementById("register_stack_show"),
@@ -175,6 +189,15 @@ export class UIController {
             this.registers.ticks.textContent = data.count;
         } else if (event === "state") {
             this.refreshRegisters();
+        } else if (event === "version") {
+            var vi = document.getElementsByClassName("reginfo");
+            for(var i = 0 ; i < vi.length ; i++){
+                vi[i].style.display = "none";
+            }
+            var vi = document.getElementsByClassName("regv" + data.state);
+            for(var i = 0 ; i < vi.length ; i++){
+                vi[i].style.display = "flex";
+            }
         }
     }
 
@@ -259,6 +282,10 @@ export class UIController {
     refreshRegisters() {
         this.registers.a.textContent = toHexString(this.emulator.registers.a);
         this.registers.b.textContent = toHexString(this.emulator.registers.b);
+        this.registers.c.textContent = toHexString(this.emulator.registers.c);
+        this.registers.d.textContent = toHexString(this.emulator.registers.d);
+        this.registers.e.textContent = toHexString(this.emulator.registers.e);
+        this.registers.f.textContent = toHexString(this.emulator.registers.f);
         this.registers.pc.textContent = toHexString(this.emulator.registers.pc);
 
         this.registers.opcode.textContent = toHexString(

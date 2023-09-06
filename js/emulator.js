@@ -30,6 +30,10 @@ export class FruitflyEmulator {
     registers = {
         a: 0,
         b: 0,
+        c: 0,
+        d: 0,
+        e: 0,
+        f: 0,
         pc: 0,
     };
 
@@ -47,6 +51,10 @@ export class FruitflyEmulator {
         this.ticksSinceBoot = 0;
         this.timer = null;
         this.lastKeyCode = null;
+    }
+
+    getRegisterById(vrt){
+        return ["a","b","c","d","e","f"][vrt];
     }
 
     attach(){
@@ -97,11 +105,11 @@ export class FruitflyEmulator {
     }
 
     setStatus(message) {
-        this.rawstatus.innerHTML = message;
+        this.rawstatus.value = message;
     }
 
     getStatus() {
-        return this.rawstatus.innerHTML;
+        return this.rawstatus.value;
     }
 
     setOnExitListener(fun) {
@@ -134,6 +142,16 @@ export class FruitflyEmulator {
         });
     }
 
+    grabNextInstruction(){
+        this.current_opcode_set = this.memory[this.registers.pc];
+        this.current_opcode = this.getOpcodeFromInstruction(
+            this.current_opcode_set
+        );
+        this.current_argument = this.getInstructionArguments(
+            this.current_opcode_set
+        );
+    }
+
     tick() {
 
         if(!this.is_run_button.checked){
@@ -150,13 +168,7 @@ export class FruitflyEmulator {
             return;
         }
 
-        this.current_opcode_set = this.memory[this.registers.pc];
-        this.current_opcode = this.getOpcodeFromInstruction(
-            this.current_opcode_set
-        );
-        this.current_argument = this.getInstructionArguments(
-            this.current_opcode_set
-        );
+        this.grabNextInstruction();
 
         if (!this.operations[this.current_opcode]) {
             this.lastError = `Unknown opcode: ${this.current_opcode}`;
@@ -217,8 +229,16 @@ export class FruitflyEmulator {
     }
 
     doV2RA() {
-        this.setRegister("a", this.current_argument);
-        this.setRegister("pc", this.registers.pc + 1);
+        if(this.version>=2){
+            this.setRegister("pc", this.registers.pc + 1);
+            var item = this.getRegisterById(this.current_argument);
+            this.grabNextInstruction();
+            this.setRegister(item, this.current_argument);
+            this.setRegister("pc", this.registers.pc + 1);
+        }else{
+            this.setRegister("a", this.current_argument);
+            this.setRegister("pc", this.registers.pc + 1);
+        }
     }
 
     doV2RB() {
@@ -237,8 +257,16 @@ export class FruitflyEmulator {
     }
 
     doA2RA() {
-        this.setRegister("a", this.memory[this.current_argument]);
-        this.setRegister("pc", this.registers.pc + 1);
+        if(this.version>=2){
+            this.setRegister("pc", this.registers.pc + 1);
+            var item = this.getRegisterById(this.current_argument);
+            this.grabNextInstruction();
+            this.setRegister(item, this.memory[this.current_argument]);
+            this.setRegister("pc", this.registers.pc + 1);
+        }else{
+            this.setRegister("a", this.memory[this.current_argument]);
+            this.setRegister("pc", this.registers.pc + 1);
+        }
     }
 
     doA2RB() {
@@ -247,9 +275,17 @@ export class FruitflyEmulator {
     }
 
     doRA2A() {
-        this.memory[this.current_argument] = this.registers.a;
+        if(this.version>=2){
+            this.setRegister("pc", this.registers.pc + 1);
+            var item = this.getRegisterById(this.current_argument);
+            this.grabNextInstruction();
+            this.memory[item] = this.registers.a;
+            this.setRegister("pc", this.registers.pc + 1);
 
-        this.setRegister("pc", this.registers.pc + 1);
+        }else{
+            this.memory[this.current_argument] = this.registers.a;
+            this.setRegister("pc", this.registers.pc + 1);
+        }
     }
 
     doRB2A() {
@@ -323,7 +359,7 @@ export class FruitflyEmulator {
     insertCartridge(dataset) {
         // check size of the cardridge
         if (dataset.length != 4103) {
-            window.alert(
+            this.setStatus(
                 "Invalid cardridge. Expected a size of 4103 but found " +
                     dataset.length
             );
@@ -332,19 +368,35 @@ export class FruitflyEmulator {
         // check signature
         // SIGNATURE
         if (!(dataset[0] == 0x5853 && dataset[1] == 0xcd45)) {
-            window.alert("Invalid signature");
+            this.setStatus("Invalid signature");
             return;
         }
-        // VERSIONS
-        if (!(dataset[2] == 0x0101 && dataset[3] == 0x0001)) {
-            window.alert("Invalid version");
+        // MACHINE TYPE
+        if (!(dataset[2] == 0x0101)) {
+            this.setStatus("Invalid machine type");
             return;
         }
+        // VERSION
+        if (!(dataset[3] <= 0x0002)) {
+            this.setStatus("Invalid version");
+            return;
+        }
+        this.version = dataset[3];
+        this.notifyListeners({
+            event: "version",
+            data: {
+                state: this.version,
+            },
+        });
         // release to the emulator
         this.memory = dataset.subarray(4);
         this.registers = {
             a: 0,
             b: 0,
+            c: 0,
+            d: 0,
+            e: 0,
+            f: 0,
             pc: 0,
         };
         this.callstack = [];
@@ -371,6 +423,9 @@ export class FruitflyEmulator {
 
     opcodeAddressToString(address) {
         const opcode = this.getOpcodeFromInstruction(this.memory[address]);
+        if(opcode==5){
+            return ["UNKNOWN","ADD","SUB","DIV","MUL","UNKNOWN","UNKNOWN","UNKNOWN","UNKNOWN","UNKNOWN","UNKNOWN","UNKNOWN","UNKNOWN","UNKNOWN","UNKNOWN","UNKNOWN","DEBUG","RETURN","PUSHRA","PUSHRB","POPRA","POPRB"][this.getInstructionArguments(this.memory[address])];
+        }
         return opcodeToString(opcode);
     }
 }
